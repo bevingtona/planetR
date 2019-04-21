@@ -1,0 +1,14 @@
+Package: planetR
+Title: Search, Activate and Download Satellite Imagery from the Planet API. 
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Alexandre",
+             family = "Bevington",
+             role = c("aut", "cre"),
+             email = "alexandre.bevington@gov.bc.ca"),
+      person(given = "Province of British Columbia",
+             role = "cph"))
+Description: Search, activate and download satellite imagery from the Planet API. 
+License: Apache License (== 2.0) | file LICENSE
+Encoding: UTF-8
+LazyData: true

@@ -1,0 +1,114 @@
+#' A function to search Planet imagery
+#'
+#' This function allows you to search the Planet API
+#' @param bbox shapefile of bounding box must be EPSG:4326 Projection; no default.
+#' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
+#' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
+#' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
+#' @param item_name Defaults to "PSOrthoTile".
+#' @keywords Planet
+#' @export
+#' @examples
+#' planet_search()
+
+library(httr)
+library(jsonlite)
+
+planet_search <- function(bbox ,
+                          date_end = as.Date('2018-07-01'),
+                          date_start = as.Date('2018-08-01'),
+                          cloud_lim = 0.1,
+                          item_name = "PSOrthoTile")
+
+  {
+
+  #convert shapefile to geojson
+  #shapefile of bounding box must be EPSG:4326 Projection
+  geo_json_geometry <- list(
+    type=jsonlite::unbox("Polygon"),
+    coordinates = list(list(
+      c(bbox@xmin,
+        bbox@ymin),
+      c(bbox@xmin,
+        bbox@ymax),
+      c(bbox@xmax,
+        bbox@ymax),
+      c(bbox@xmax,
+        bbox@ymin),
+      c(bbox@xmin,
+        bbox@ymin)
+    ))
+  )
+
+
+  # filter for items the overlap with our chosen geometry
+  geometry_filter <- list(
+    type= jsonlite::unbox("GeometryFilter"),
+    field_name= jsonlite::unbox("geometry"),
+    config= geo_json_geometry
+  )
+
+  #we will search for images for up to a month beforethe date we are interested in
+
+  dategte <- paste0(date_start,"T00:00:00.000Z")
+  datelte <- paste0(date_end,"T00:00:00.000Z")
+
+  # filter images by daterange
+  date_range_filter <- list(
+    type= jsonlite::unbox("DateRangeFilter"),
+    field_name= jsonlite::unbox("acquired"),
+    config= list(
+      gte= jsonlite::unbox(dategte),
+      lte= jsonlite::unbox(datelte))
+  )
+
+
+  # filter by cloud cover
+  cloud_cover_filter <- list(
+    type= jsonlite::unbox("RangeFilter"),
+    field_name= jsonlite::unbox("cloud_cover"),
+    config = list(
+      lte= jsonlite::unbox(cloud_lim))
+  )
+
+  # # filter by coverage of bounding box
+  # coverage_filter <- list(
+  #   type= jsonlite::unbox("RangeFilter"),
+  #   field_name= unbox("usable_data"),
+  #   config = list(
+  #     gte= jsonlite::unbox(cover_lim))
+  # )
+
+  # combine filters
+  filter_configs <- list(
+    type= jsonlite::unbox("AndFilter"),
+    config = list(date_range_filter, cloud_cover_filter,geometry_filter) #, coverage_filter
+  )
+
+  #build request
+  search_endpoint_request <- list(
+    item_types = item_name,
+    filter = filter_configs
+  )
+
+  #convert request to JSON
+  body_json <- jsonlite::toJSON(search_endpoint_request,pretty=TRUE)
+
+  #API request config
+  url <- 'https://api.planet.com/data/v1/quick-search'
+  body <- body_json
+
+  #send API request
+  request <- httr::POST(url, body = body, content_type_json(), authenticate(api_key, ""))
+
+  #get request content
+  response <- httr::content(request)
+  # response_0250 <- httr::content(request)
+  # response_0500 = httr::content(httr::GET(response_0250$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
+  # response_1000 = content(httr::GET(response_0500$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
+  # response = rbind_pages(pages = list(response_0250$features,response_0500$features))
+
+  ## This is for next page: response$`_links`$`_next`
+  return(response)
+}
+
