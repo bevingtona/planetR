@@ -1,24 +1,6 @@
----
-output:
-  md_document:
-    variant: markdown_github
----
-
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
-)
-```
-
-<!-- Add a project state badge
-See https://github.com/BCDevExchange/Our-Project-Docs/blob/master/discussion/projectstates.md
-If you have bcgovr installed and you use RStudio, click the 'Insert BCDevex Badge' Addin. -->
-
 # planetR
 
-Description of package
+Some tools to search, activate and download satellite imgery from the Planet API (https://developers.planet.com/docs/api/)
 
 ### Features
 
