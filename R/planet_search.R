@@ -11,6 +11,10 @@
 #' @examples
 #' planet_search()
 
+####
+#### Inspired from https://www.lentilcurtain.com/posts/accessing-planet-labs-data-api-from-r/
+####
+
 library(httr)
 library(jsonlite)
 
