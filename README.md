@@ -1,22 +1,119 @@
 # planetR
 
-Some tools to search, activate and download satellite imgery from the Planet API (https://developers.planet.com/docs/api/)
+Some R tools to search, activate and download satellite imgery from the Planet API (https://developers.planet.com/docs/api/). The current purpose of the package is to Search the API, batch activate all assets, and then batch download them. 
 
 ### Features
 
+```{r features}
+## basic example code
+
+planetR::planet_search()
+
+planetR::planet_activate()
+
+planetR::planet_download()
+
+```
+
 ### Installation
+
+You can install planetR directly from this GitHub repository. To do so, you will need the remotes package:
+
+```{r features}
+install.packages("remotes")
+```
+
+Next, install and load the bcgovr package using remotes::install_github():
+
+```{r features}
+remotes::install_github("bcgov/planetR")
+library(planetR)
+```
 
 ### Usage
 
+Step 1: Search API (inspired from https://www.lentilcurtain.com/posts/accessing-planet-labs-data-api-from-r/)
+Step 2: Write a loop to batch activate
+Step 3: Write a loop to batch download
+
 #### Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example of how to search, activate and download assets using `planetR`.
 
 ```{r example}
-## basic example code
+
+#### PLANET_SEARCH: Search API ####
+
+  # library(mapedit)
+  # library(leaflet)
+  # library(tidyverse)
+  # library(lubridate)
+  # library(jsonlite)
+  # library(sf)
+  # library(sp)
+  # library(XML)
+  # library(dplyr)
+  # library(raster)
+  # library(plotly)
+  # library(geojsonsf)
+  # library(httr)
+  # library(mapview)
+  # library(here)
+
+#### VARIABLES: Set variables for Get_Planet function ####
+
+  # Set API
+
+  api_key = ""
+  
+  # Date range of interest
+  start_year = 2018
+  end_year   = 2018
+  start_doy  = 250
+  end_doy    = 300
+  
+  date_start = as.Date(paste0(year,"-01-01"))+start_doy
+  date_end   = as.Date(paste0(year,"-01-01"))+end_doy
+
+
+  # Metadata filters
+  cloud_lim    = 0.1 #less than
+  item_names   = c("PSOrthoTile") #PSScene4Band")#,"PSScene3Band") #c(#c("Sentinel2L1C") #"PSOrthoTile"
+  products     = c("analytic")#c("analytic_b1","analytic_b2")
+
+  my_aoi = read_sf("")
+  bbox <- extent(my_aoi)
+
+#### PLANET_SEARCH: Search API ####
+
+  response <- planet_search(bbox, date_end, date_start, cloud_lim, cover_lim, item_name)
+  print(paste("Images available:",length(response$features), item_name, product))
+
+
+#### PLANET_ACTIVATE: Batch Activate ####
+
+if(length(response$features) == 0)
+  {print("No images")}
+if(length(response$features) > 0)
+  {
+  for(i in 1:length(response$features)) {
+    planet_activate(i)
+    print(paste("Activating", i, "of", length(response$features)))}
+
+    print("wait 20 seconds")
+    Sys.sleep(20)
+
+#### PLANET_DOWNLOAD: Batch Download ####
+
+      for(i in 1:length(response$features)) {
+        planet_download(i)
+        print(paste("Downloading", i, "of", length(response$features)))}
+
 ```
 
 ### Project Status
+
+Very early/experimental status. 
 
 ### Getting Help or Reporting an Issue
 
