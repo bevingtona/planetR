@@ -98,8 +98,8 @@ planet_search <- function(bbox ,
   request <- httr::POST(url, body = body, content_type_json(), authenticate(api_key, ""))
 
   #get request content
-  # response      = httr::content(request)
-  response_0250 = httr::content(request)
+  response      = httr::content(request)
+  # response_0250 = httr::content(request)
   # response_0500 = httr::content(httr::GET(response_0250$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
   # response_1000 = content(httr::GET(response_0500$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
   # response      = rbind_pages(pages = list(response_0250$features,response_0500$features))
