@@ -71,11 +71,9 @@ for(i in 1:length(response$features)) {
 for(i in 1:length(response$features)) {
   planet_download(i)
   print(paste("Downloading", i, "of", length(response$features)))}
-  
-! [Alt text] (images/download_example.png) ! [Alt text] (images/download_example.png)
-
-
 ```
+![](images/download_example.png)
+
 
 ### Project Status
 
