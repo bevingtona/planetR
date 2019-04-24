@@ -32,8 +32,6 @@ Step 3: Write a loop to batch download
 This is an example of how to search, activate and download assets using `planetR`.
 
 ```{r example}
-
-remotes::install_github("bevingtona/planetR", force = T)
 library(planetR)
 
 
