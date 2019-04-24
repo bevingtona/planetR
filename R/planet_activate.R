@@ -36,9 +36,9 @@ planet_activate = function(i, item_name = "PSOrthoTile")
   activated = POST(content(activate)[[product]][["_links"]][["activate"]], authenticate(api_key, ""))
 
   if(activated$status_code == 204){
-    print(paste("Status code:", activated$status_code, "ready to download"))}
+    print(paste("Status code:", activated$status_code, "Ready to download"))}
   if(activated$status_code == 202){
     print(paste("Status code:", activated$status_code, "Not ready to download"))}
   if(activated$status_code == 200){
-    print(paste("Status code:", activated$status_code, "not sure"))}
+    print(paste("Status code:", activated$status_code, "Not ready to download"))}
 }

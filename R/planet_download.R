@@ -37,7 +37,6 @@ planet_download = function(i)
 
   activate = GET(contents$`_links`$assets, authenticate(api_key, ""))
 
-
   for(t in seq(1,1000,1)) {
     print(t)
     activated = POST(content(activate)[[product]][["_links"]][["activate"]], authenticate(api_key, ""))
@@ -50,12 +49,9 @@ planet_download = function(i)
   download = GET(content(activate)[[product]][["_links"]][["_self"]], authenticate(api_key, ""))
 
   link = content(download, "parsed")
-  # print(link$location)
 
   export = paste0(contents$id,".tif")
-  # print(export)
 
   RETRY("GET", link$location, httr::write_disk(export, overwrite = T), httr::progress("down"), authenticate(api_key, ""))
 
-  # print("complete")
 }
