@@ -5,10 +5,15 @@ Some R tools to search, activate and download satellite imgery from the Planet A
 ### Features
 
 ```{r functions}
-## basic example code
+## current functions
 planetR::planet_search()
 planetR::planet_activate()
 planetR::planet_download()
+
+## in development
+planetR::planet_clip()
+planetR::planet_create_folder()
+planetR::planet_set_aoi()
 ```
 
 ### Installation
@@ -36,6 +41,9 @@ This is an example of how to search, activate and download assets using `planetR
 
 # Set API
 api_key = ""
+
+# Set output directory 
+setwd("")
 
 # Date range of interest
 start_year = 2018
