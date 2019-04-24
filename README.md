@@ -32,7 +32,6 @@ Step 3: Write a loop to batch download
 This is an example of how to search, activate and download assets using `planetR`.
 
 ```{r example}
-
 #### VARIABLES: Set variables for Get_Planet function ####
 
 # Set API
@@ -57,7 +56,7 @@ This is an example of how to search, activate and download assets using `planetR
 #### PLANET_SEARCH: Search API ####
 
   response <- planet_search(bbox, date_end, date_start, cloud_lim, cover_lim, item_name)
-  print(paste("Images available:",length(response$features), item_name, product))
+  print(paste("Images available:", length(response$features), item_name, product))
 
 #### PLANET_ACTIVATE: Batch Activate ####
 
