@@ -12,7 +12,7 @@
 #' planet_search()
 
 ####
-#### Inspired from https://www.lentilcurtain.com/posts/accessing-planet-labs-data-api-from-r/
+#### Code from https://www.lentilcurtain.com/posts/accessing-planet-labs-data-api-from-r/
 ####
 
 library(httr)
@@ -75,14 +75,6 @@ planet_search <- function(bbox ,
       lte= jsonlite::unbox(cloud_lim))
   )
 
-  # # filter by coverage of bounding box
-  # coverage_filter <- list(
-  #   type= jsonlite::unbox("RangeFilter"),
-  #   field_name= unbox("usable_data"),
-  #   config = list(
-  #     gte= jsonlite::unbox(cover_lim))
-  # )
-
   # combine filters
   filter_configs <- list(
     type= jsonlite::unbox("AndFilter"),
@@ -106,11 +98,11 @@ planet_search <- function(bbox ,
   request <- httr::POST(url, body = body, content_type_json(), authenticate(api_key, ""))
 
   #get request content
-  response <- httr::content(request)
-  # response_0250 <- httr::content(request)
+  # response      = httr::content(request)
+  response_0250 = httr::content(request)
   # response_0500 = httr::content(httr::GET(response_0250$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
   # response_1000 = content(httr::GET(response_0500$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
-  # response = rbind_pages(pages = list(response_0250$features,response_0500$features))
+  # response      = rbind_pages(pages = list(response_0250$features,response_0500$features))
 
   ## This is for next page: response$`_links`$`_next`
   return(response)
