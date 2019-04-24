@@ -26,7 +26,7 @@ install.packages("remotes")
 Next, install and load the bcgovr package using remotes::install_github():
 
 ```{r features}
-remotes::install_github("bcgov/planetR")
+remotes::install_github("bevingtona/planetR")
 library(planetR)
 ```
 
