@@ -4,7 +4,7 @@ Some R tools to search, activate and download satellite imgery from the Planet A
 
 ### Features
 
-```{r features}
+```{r functions}
 ## basic example code
 planetR::planet_search()
 planetR::planet_activate()
@@ -13,15 +13,10 @@ planetR::planet_download()
 
 ### Installation
 
-You can install planetR directly from this GitHub repository. To do so, you will need the remotes package:
+You can install planetR directly from this GitHub repository. To do so, you will need the remotes package. Next, install and load the planetR package using remotes::install_github():
 
-```{r features}
+```{r installation}
 install.packages("remotes")
-```
-
-Next, install and load the planetR package using remotes::install_github():
-
-```{r features}
 remotes::install_github("bevingtona/planetR")
 library(planetR)
 ```
@@ -34,7 +29,7 @@ Step 3: Write a loop to batch download
 
 #### Example
 
-This is a basic example of how to search, activate and download assets using `planetR`.
+This is an example of how to search, activate and download assets using `planetR`.
 
 ```{r example}
 
