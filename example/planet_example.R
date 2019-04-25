@@ -8,7 +8,7 @@ library(httr)
 
 # Set API
 setwd(here())
-api_key = as.character(read.csv(paste0(getwd(),"/example/api.csv"))$api)
+api_key = as.character(read.csv("C:/Users/bevington/Dropbox/FLNRO_p1/Programming/bevirepo/api.csv")$api)
 
 # Date range of interest
 start_year = 2018
