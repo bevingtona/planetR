@@ -1,10 +1,14 @@
-remotes::install_github("bevingtona/planetR", force = T)
+# remotes::install_github("bevingtona/planetR", force = T)
 library(planetR)
+library(here)
+library(raster)
+library(httr)
 
 #### VARIABLES: Set variables for Get_Planet function ####
 
 # Set API
-api_key = ""
+setwd(here())
+api_key = as.character(read.csv(paste0(getwd(),"/example/api.csv"))$api)
 
 # Date range of interest
 start_year = 2018
