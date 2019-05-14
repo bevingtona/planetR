@@ -37,6 +37,16 @@ Step 3: Write a loop to batch download
 This is an example of how to search, activate and download assets using `planetR`.
 
 ```{r example}
+
+#### Libraries
+
+library(planetR)
+library(sf)
+library(httr)
+library(tidyverse)
+library(here)
+library(raster)
+
 #### VARIABLES: Set variables for Get_Planet function ####
 
 # Set API

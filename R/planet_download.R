@@ -14,7 +14,7 @@
 library(httr)
 library(jsonlite)
 
-planet_download = function(i)
+planet_download = function(i, overwrite = T)
 {
 
   url <- paste0("https://api.planet.com/data/v1/item-types/",item_name,"/items/",response$features[[i]]$id)
@@ -52,6 +52,6 @@ planet_download = function(i)
 
   export = paste0(contents$id,".tif")
 
-  RETRY("GET", link$location, httr::write_disk(export, overwrite = T), httr::progress("down"), authenticate(api_key, ""))
+  RETRY("GET", link$location, httr::write_disk(export, overwrite = overwrite), httr::progress("down"), authenticate(api_key, ""))
 
 }
