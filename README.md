@@ -68,7 +68,7 @@ cloud_lim    = 0.1 #less than
 item_name    = "PSOrthoTile" #PSScene4Band")#,"PSScene3Band") #c(#c("Sentinel2L1C") #"PSOrthoTile"
 product      = "analytic" #c("analytic_b1","analytic_b2")
 
-# Set AOI
+# Set AOI (Option 1: read shp or kml; Option 2: define on the fly in mapedit)
 my_aoi       = read_sf("") # Import from KML or other
 my_aoi       = mapedit::editMap() # Set in GUI
 bbox         = extent(my_aoi)
@@ -81,7 +81,7 @@ print(paste("Images available:", length(response$features), item_name, product))
 #### PLANET_ACTIVATE: Batch Activate ####
 
 for(i in 1:length(response$features)) {
-  planet_activate(i)
+  planet_activate(i, item_name = item_name)
   print(paste("Activating", i, "of", length(response$features)))}
    
 #### PLANET_DOWNLOAD: Batch Download ####
