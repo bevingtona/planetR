@@ -44,6 +44,7 @@ This is an example of how to search, activate and download assets using `planetR
 library(planetR)
 library(here)
 library(httr)
+library(jsonlite)
 
 #### VARIABLES: Set variables for Get_Planet function ####
 

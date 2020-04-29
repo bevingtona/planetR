@@ -1,8 +1,8 @@
 # remotes::install_github("bevingtona/planetR", force = T)
 library(planetR)
 library(here)
-library(raster)
 library(httr)
+library(jsonlite)
 
 #### VARIABLES: Set variables for Get_Planet function ####
 

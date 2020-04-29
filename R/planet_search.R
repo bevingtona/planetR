@@ -103,23 +103,13 @@ planet_search <- function(bbox ,
 
 
   while(is.null(res$`_links`$`_next`)==FALSE){
-    # if(){
     request <- httr::GET(httr::content(request)$`_links`$`_next`, content_type_json(), authenticate(api_key, ""))
     res <- fromJSON(httr::content(request, as = "text"))
     resID = res$features$id
     resDFid <- rbind(resDFid, data.frame(id = resID))
-    print(paste(nrow(resDFid),"images"))
+    print(paste(nrow(resDFid),"images ..."))
     }
 
-
-  #get request content
-  # response      = httr::content(request)
-  # response_0250 = httr::content(request)
-  # response_0500 = httr::content(httr::GET(response_0250$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
-  # response_1000 = content(httr::GET(response_0500$`_links`$`_next`, content_type_json(), authenticate(api_key, "")))
-  # response      = rbind_pages(pages = list(response_0250$features,response_0500$features))
-
-  ## This is for next page: response$`_links`$`_next`
   return(resDFid)
 }
 
