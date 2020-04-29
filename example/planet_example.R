@@ -6,9 +6,15 @@ library(httr)
 
 #### VARIABLES: Set variables for Get_Planet function ####
 
-# Set API
-setwd(here())
-api_key = as.character(read.csv("C:/Users/bevington/Dropbox/FLNRO_p1/Programming/bevirepo/api.csv")$api)
+# Site name
+site = "MySite"
+
+# Set Workspace (optional)
+setwd("")
+
+# Set API (manually in the script or in a attached file)
+api_key = ""
+api_key = as.character(read.csv("../api.csv")$api)
 
 # Date range of interest
 start_year = 2018
@@ -20,28 +26,32 @@ date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
 
 # Metadata filters
 cloud_lim    = 0.1 #less than
-item_name    = "PSOrthoTile" #PSScene4Band")#,"PSScene3Band") #c(#c("Sentinel2L1C") #"PSOrthoTile"
-product      = "analytic" #c("analytic_b1","analytic_b2")
+item_name    = "PSScene4Band" #PSOrthoTile")#,"PSScene3Band") #c(#c("Sentinel2L1C") #"PSOrthoTile"
+product      = "analytic_sr" #c("analytic_b1","analytic_b2")
 
 # Set AOI
-my_aoi       = read_sf("") # Import from KML or other
-my_aoi       = mapedit::editMap() # Set in GUI
-bbox         = extent(my_aoi)
+# my_aoi       = read_sf("") # Import from KML or other
+# my_aoi       = mapedit::editMap() # Set in GUI
+# bbox         = extent(my_aoi)
+bbox         = extent(-129,-127,50,51)
+
+# Set/Create Export Folder (optional)
+exportfolder = paste(site, item_name, product, start_year, end_year, start_doy, end_doy, sep = "_")
+dir.create(exportfolder, showWarnings = F)
 
 #### PLANET_SEARCH: Search API ####
 
 response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name)
-print(paste("Images available:", length(response$features), item_name, product))
+print(paste("Images available:", nrow(response), item_name, product))
 
 #### PLANET_ACTIVATE: Batch Activate ####
 
-for(i in 1:length(response$features)) {
-  planet_activate(i)
-  print(paste("Activating", i, "of", length(response$features)))}
-   
+for(i in 1:nrow(response)) {
+  planet_activate(i, item_name = item_name)
+  print(paste("Activating", i, "of", nrow(response)))}
+
 #### PLANET_DOWNLOAD: Batch Download ####
-  
-for(i in 1:length(response$features)) {
+
+for(i in 1:nrow(response)) {
   planet_download(i)
-  print(paste("Downloading", i, "of", length(response$features)))}
-  
+  print(paste("Downloading", i, "of", nrow(response)))}

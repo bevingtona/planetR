@@ -17,7 +17,7 @@ library(jsonlite)
 planet_download = function(i, overwrite = T)
 {
 
-  url <- paste0("https://api.planet.com/data/v1/item-types/",item_name,"/items/",response$features[[i]]$id)
+  url <- paste0("https://api.planet.com/data/v1/item-types/",item_name,"/items/",response[i,])
   # print(url)
 
   # GET BASICS ASSET
@@ -37,21 +37,25 @@ planet_download = function(i, overwrite = T)
 
   activate = GET(contents$`_links`$assets, authenticate(api_key, ""))
 
-  for(t in seq(1,1000,1)) {
-    print(t)
-    activated = POST(content(activate)[[product]][["_links"]][["activate"]], authenticate(api_key, ""))
-    if(activated$status_code != 204){
-      print(paste(activated$status_code, "retry in 10 seconds"))
-      Sys.sleep(10)}
-    else {break}}
+  if(max(names(content(activate)) %in% product) == 1){
 
-  activate = GET(contents$`_links`$assets, authenticate(api_key, ""))
-  download = GET(content(activate)[[product]][["_links"]][["_self"]], authenticate(api_key, ""))
+    for(t in seq(1,1000,1)) {
+      print(t)
+      activated = POST(content(activate)[[product]][["_links"]][["activate"]], authenticate(api_key, ""))
+      if(activated$status_code != 204){
+        print(paste(activated$status_code, "retry in 10 seconds"))
+        Sys.sleep(10)}
+      else {break}}
 
-  link = content(download, "parsed")
+    activate = GET(contents$`_links`$assets, authenticate(api_key, ""))
+    download = GET(content(activate)[[product]][["_links"]][["_self"]], authenticate(api_key, ""))
 
-  export = paste0(contents$id,".tif")
+    link = content(download, "parsed")
 
-  RETRY("GET", link$location, httr::write_disk(export, overwrite = overwrite), httr::progress("down"), authenticate(api_key, ""))
+    export = paste0(exportfolder, "/", contents$id,".tif")
 
-}
+    RETRY("GET", link$location, httr::write_disk(export, overwrite = overwrite), httr::progress("down"), authenticate(api_key, ""))
+
+    }else{print(paste("No", item_name, product, "data available for download"))}
+  }
+
