@@ -107,9 +107,26 @@ planet_search <- function(bbox ,
     res <- fromJSON(httr::content(request, as = "text"))
     resID = res$features$id
     resDFid <- rbind(resDFid, data.frame(id = resID))
-    print(paste(nrow(resDFid),"images ..."))
     }
 
-  return(resDFid)
+
+  response_doy <- as.numeric(
+    format(
+      as.Date.character(
+        str_split_fixed(
+          resDFid$id,
+          pattern = "_",n = 2)[,1],
+        format = "%Y%m%d"),
+      format = "%j")
+  )
+
+  response_doy <- (response_doy > start_doy & response_doy < end_doy)
+
+  resDFid_doy <- data.frame(resDFid[response_doy,])
+
+  print(paste(nrow(resDFid),"images ... between", date_start, "and", date_end))
+  print(paste(nrow(resDFid_doy),"images ... that meet all criteria"))
+
+  return(resDFid_doy)
 }
 

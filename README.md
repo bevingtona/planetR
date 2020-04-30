@@ -37,7 +37,6 @@ Step 3: Write a loop to batch download
 This is an example of how to search, activate and download assets using `planetR`.
 
 ```{r example}
-
 #### STEP 1: LIBRARIES ####
 
 # remotes::install_github("bevingtona/planetR", force = T)
@@ -48,29 +47,30 @@ library(here)
 library(httr)
 library(jsonlite)
 library(raster)
+library(stringr)
 
 #### STEP 2: USER VARIABLES: Set variables for Get_Planet function ####
 
 # Site name that will be used in the export folder name
-site = "MySite"
+site = "Kiwa"
 
 # Set Workspace (optional)
 setwd("")
 
 # Set API (manually in the script or in a attached file)
 api_key = as.character(read.csv("../api.csv")$api) # OPTION 1
-api_key = "" # OPTION 2
+# api_key = "" # OPTION 2
 
 # Date range of interest
-start_year = 2018
-end_year   = 2018
-start_doy  = 250
+start_year = 2016
+end_year   = 2020
+start_doy  = 290
 end_doy    = 300
 date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
 date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
 
 # Metadata filters
-cloud_lim    = 0.1 # percent scaled from 0-1
+cloud_lim    = 0.02 # percent scaled from 0-1
 item_name    = "PSScene4Band" #PSOrthoTile")#,"PSScene3Band") #c(#c("Sentinel2L1C") #"PSOrthoTile"
 product      = "analytic_sr" #c("analytic_b1","analytic_b2")
 
@@ -89,6 +89,7 @@ dir.create(exportfolder, showWarnings = F)
 response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name)
 print(paste("Images available:", nrow(response), item_name, product))
 
+
 #### STEP 4: PLANET_ACTIVATE: Batch Activate ####
 
 for(i in 1:nrow(response)) {
@@ -100,7 +101,6 @@ for(i in 1:nrow(response)) {
 for(i in 1:nrow(response)) {
   planet_download(i)
   print(paste("Downloading", i, "of", nrow(response)))}
-
 
 ```
 ![](images/download_example.png)
