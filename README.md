@@ -52,10 +52,10 @@ library(stringr)
 #### STEP 2: USER VARIABLES: Set variables for Get_Planet function ####
 
 # Site name that will be used in the export folder name
-site = "Kiwa"
+site = "MySite"
 
 # Set Workspace (optional)
-setwd("")
+setwd("") # setwd(here())
 
 # Set API (manually in the script or in a attached file)
 api_key = as.character(read.csv("../api.csv")$api) # OPTION 1
