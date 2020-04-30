@@ -40,7 +40,7 @@ This is an example of how to search, activate and download assets using `planetR
 #### STEP 1: LIBRARIES ####
 
 # remotes::install_github("bevingtona/planetR", force = T)
-# install.packages(c("here", "httr", "jsonlite", "raster"))
+# install.packages(c("here", "httr", "jsonlite", "raster","stringr))
 
 library(planetR)
 library(here)
