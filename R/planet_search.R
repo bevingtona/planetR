@@ -108,25 +108,9 @@ planet_search <- function(bbox ,
     resID = res$features$id
     resDFid <- rbind(resDFid, data.frame(id = resID))
     }
-
-
-  response_doy <- as.numeric(
-    format(
-      as.Date.character(
-        str_split_fixed(
-          resDFid$id,
-          pattern = "_",n = 2)[,1],
-        format = "%Y%m%d"),
-      format = "%j")
-  )
-
-  response_doy <- (response_doy > start_doy & response_doy < end_doy)
-
-  resDFid_doy <- data.frame(resDFid[response_doy,])
-
+  
   print(paste(nrow(resDFid),"images ... between", date_start, "and", date_end))
-  print(paste(nrow(resDFid_doy),"images ... that meet all criteria"))
 
-  return(resDFid_doy)
+  return(resDFid)
 }
 
