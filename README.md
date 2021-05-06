@@ -106,6 +106,14 @@ for(i in 1:nrow(response)) {
 for(i in 1:nrow(response)) {
   planet_download(i)
   print(paste("Downloading", i, "of", nrow(response)))}
+  
+#### STEP 5: PLANET_DOWNLOAD WITH CLIP IN PARALLEL #####
+
+library(future.apply)
+library(stars)
+library(sf)
+plan(multisession)
+future_lapply(1:nrow(response), planet_download_withClip, my_aoi = my_aoi)
 
 ```
 ![](images/download_example.png)
