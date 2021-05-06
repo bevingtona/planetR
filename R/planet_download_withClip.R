@@ -1,3 +1,17 @@
+  
+#' A function to download activated Planet imagery
+#'
+#' Download and clip images
+#' @param i 
+#' @param overwrite
+#' @param my_aoi
+#' @keywords Planet
+#' @export
+#' @examples
+#' planet_download_withClip()
+
+library(httr)
+library(jsonlite)
 library(stars)
 library(sf)
 
