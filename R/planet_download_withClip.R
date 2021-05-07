@@ -16,7 +16,7 @@ library(stars)
 library(sf)
 
 
-planet_download_withClip <- function (i, overwrite = T, my_aoi) 
+planet_download_withClip <- function (i, overwrite = T, my_aoi, out_dir) 
 {
   url <- paste0("https://api.planet.com/data/v1/item-types/", 
                 item_name, "/items/", response[i, ])
@@ -52,7 +52,7 @@ planet_download_withClip <- function (i, overwrite = T, my_aoi)
     download = GET(content(activate)[[product]][["_links"]][["_self"]], 
                    authenticate(api_key, ""))
     link = content(download, "parsed")
-    export = paste0(exportfolder, "/", contents$id, 
+    export = paste0(out_dir, "/", contents$id, 
                     ".tif")
     RETRY("GET", link$location, httr::write_disk(export, 
                                                  overwrite = overwrite), httr::progress("down"), 
