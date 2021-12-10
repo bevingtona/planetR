@@ -6,6 +6,7 @@
 #' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSOrthoTile".
+#' @param api_key your planet api key string
 #' @keywords Planet
 #' @export
 #' @examples
@@ -22,7 +23,8 @@ planet_search <- function(bbox ,
                           date_end = as.Date('2018-07-01'),
                           date_start = as.Date('2018-08-01'),
                           cloud_lim = 0.1,
-                          item_name = "PSOrthoTile")
+                          item_name = "PSOrthoTile",
+                          api_key)
 
   {
 
