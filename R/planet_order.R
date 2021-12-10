@@ -5,6 +5,7 @@
 #' This function allows you to search and order data from the Planet API
 #' @param api_key a string containing your API Key for your planet account
 #' @param bbox shapefile of bounding box must be EPSG:4326 Projection; no default.
+#' @param aoi_dir A shapefile of the area you want to search for
 #' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
 #' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
