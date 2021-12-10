@@ -47,8 +47,8 @@ date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
 
 
 # Set AOI - will be used to find all images that include AOI, later used to clip in Orders API
-my_aoi  = read_sf(aoi_dir)
-bbox    = extent(my_aoi)
+my_aoi = read_sf(aoi_dir)
+bbox  = extent(my_aoi)
 
 
 #SEARCH FOR IMAGES
@@ -137,7 +137,7 @@ print(paste0("Download complete, items located in ", getwd(), "/", order_name))
 }
 
 # call function (you may have to change order name to one that hasn't already been used)
-planet_order(order = "AutomationTEST_1")
+#planet_order(order = "AutomationTEST_1")
 
 
 
