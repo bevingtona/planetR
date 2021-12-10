@@ -4,10 +4,11 @@
 #'
 #' This function allows you to search and order data from the Planet API
 #' @param api_key a string containing your API Key for your planet account
-#' @param bbox shapefile of bounding box must be EPSG:4326 Projection; no default.
-#' @param aoi_dir A shapefile of the area you want to search for
-#' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
-#' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
+#' @param aoi_dir The location of a shapefile of the area you want to search for
+#' @param start_year Defaults to 2021,
+#' @param start_doy Start Day of Year. Defaults to 158,
+#' @param end_year Defaults to 2021,
+#' @param end_doy End Day of Year. Defaults to 160,
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSScene4Band".
 #' @param product Defaults to "analytic_sr"
