@@ -1,7 +1,7 @@
 #' A function to search Planet imagery
 #'
 #' This function allows you to search the Planet API
-#' @param bbox shapefile of bounding box must be EPSG:4326 Projection; no default.
+#' @param bbox bounding box made with extent() from the raster package; must be EPSG:4326 Projection; no default.
 #' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
 #' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.

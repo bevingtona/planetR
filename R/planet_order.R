@@ -27,10 +27,12 @@ library(stringr)
 
 planet_order <- function(api_key,
                          aoi_dir,
-                         start_year = 2021,
-                         start_doy = 158,
-                         end_year = 2021,
-                         end_doy = 160,
+                         date_start= as.Date('2021-01-01', "%Y-%m-%d"),
+                         date_end= as.Date('2021-01-15', "%Y-%m-%d"),
+                         # start_year = 2021,
+                         # start_doy = 158,
+                         # end_year = 2021,
+                         # end_doy = 160,
                          cloud_lim = 0.1,
                          item_name = "PSScene4Band",
                          product  = "analytic_sr",
@@ -43,8 +45,8 @@ planet_order <- function(api_key,
 # Date range of interest
 # Date range of interest
 
-date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
-date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
+# date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
+# date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
 
 
 # Set AOI - will be used to find all images that include AOI, later used to clip in Orders API
