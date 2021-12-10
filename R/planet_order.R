@@ -1,6 +1,30 @@
 ##PlanetR search + Orders API for download
 
-planet_order <- function(aoi_dir = "/Users/DataLab/Desktop/Wine Project/SMV2.geojson",
+#' A function to order Planet imagery
+#'
+#' This function allows you to search and order data from the Planet API
+#' @param api_key a string containing your API Key for your planet account
+#' @param bbox shapefile of bounding box must be EPSG:4326 Projection; no default.
+#' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
+#' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
+#' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
+#' @param item_name Defaults to "PSScene4Band".
+#' @param product Defaults to "analytic_sr"
+#' @param order The name you want to assign to your order. Defaults to "AutomationTEST"
+#' @keywords Planet
+#' @export
+#' @examples
+#' planet_search()
+
+library(sf)
+library(here)
+library(httr)
+library(jsonlite)
+library(raster)
+library(stringr)
+
+planet_order <- function(api_key,
+                         aoi_dir,
                          start_year = 2021,
                          start_doy = 158,
                          end_year = 2021,
@@ -10,20 +34,7 @@ planet_order <- function(aoi_dir = "/Users/DataLab/Desktop/Wine Project/SMV2.geo
                          product  = "analytic_sr",
                          order = "AutomationTEST"){
 
-#remotes::install_github("bevingtona/planetR", force = T)
-#install.packages(c("here", "httr", "jsonlite", "raster","stringr"))
 
-library(sf)
-#library(planetR) #loading the package inside itself creates a circular dependency
-library(here)
-library(httr)
-library(jsonlite)
-library(raster)
-library(stringr)
-
-
-# insert api key here
-api_key = "" 
 
 #Create filters for PlanetR search
 
