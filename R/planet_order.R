@@ -14,7 +14,7 @@ planet_order <- function(aoi_dir = "/Users/DataLab/Desktop/Wine Project/SMV2.geo
 #install.packages(c("here", "httr", "jsonlite", "raster","stringr"))
 
 library(sf)
-library(planetR)
+#library(planetR) #loading the package inside itself creates a circular dependency
 library(here)
 library(httr)
 library(jsonlite)
