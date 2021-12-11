@@ -5,10 +5,8 @@
 #' This function allows you to search and order data from the Planet API
 #' @param api_key a string containing your API Key for your planet account
 #' @param aoi_dir The location of a shapefile of the area you want to search for
-#' @param start_year Defaults to 2021,
-#' @param start_doy Start Day of Year. Defaults to 158,
-#' @param end_year Defaults to 2021,
-#' @param end_doy End Day of Year. Defaults to 160,
+#' @param date_start a date object
+#' @param date_end a date object
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSScene4Band".
 #' @param product Defaults to "analytic_sr"
