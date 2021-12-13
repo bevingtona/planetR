@@ -4,7 +4,7 @@
 #'
 #' This function allows you to search and order data from the Planet API
 #' @param api_key a string containing your API Key for your planet account
-#' @param aoi_dir The location of a shapefile of the area you want to search for
+#' @param bbox bounding box made with extent() from the raster package; must be EPSG:4326 Projection; no default.
 #' @param date_start a date object
 #' @param date_end a date object
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
@@ -24,7 +24,7 @@ library(raster)
 library(stringr)
 
 planet_order <- function(api_key,
-                         aoi_dir,
+                         bbox,
                          date_start= as.Date('2021-01-01', "%Y-%m-%d"),
                          date_end= as.Date('2021-01-15', "%Y-%m-%d"),
                          # start_year = 2021,
@@ -48,8 +48,8 @@ planet_order <- function(api_key,
 
 
 # Set AOI - will be used to find all images that include AOI, later used to clip in Orders API
-my_aoi = read_sf(aoi_dir)
-bbox  = extent(my_aoi)
+#my_aoi = read_sf(aoi_dir)
+#bbox  = extent(my_aoi)
 
 
 #SEARCH FOR IMAGES
