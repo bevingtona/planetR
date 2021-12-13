@@ -55,11 +55,12 @@ planet_order <- function(api_key,
 #SEARCH FOR IMAGES
 
 #uses the quick search url (more info: https://developers.planet.com/docs/apis/data/reference/#tag/Item-Search)
-response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name)
+response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name, api_key)
 
 #ORDER API
 
-items = response$resDFid.response_doy...[1:nrow(response)]
+#items = response$resDFid.response_doy...[1:nrow(response)]
+items = response$id
 products = list(list(item_ids = items, item_type = unbox(item_name), product_bundle = unbox(product)))
 
 aoi = list(
