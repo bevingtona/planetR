@@ -1,11 +1,12 @@
 #' A function to search Planet imagery
 #'
 #' This function allows you to search the Planet API
-#' @param bbox shapefile of bounding box must be EPSG:4326 Projection; no default.
+#' @param bbox bounding box made with extent() from the raster package; must be EPSG:4326 Projection; no default.
 #' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
 #' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSOrthoTile".
+#' @param api_key your planet api key string
 #' @keywords Planet
 #' @export
 #' @examples
@@ -22,7 +23,8 @@ planet_search <- function(bbox ,
                           date_end = as.Date('2018-07-01'),
                           date_start = as.Date('2018-08-01'),
                           cloud_lim = 0.1,
-                          item_name = "PSOrthoTile")
+                          item_name = "PSOrthoTile",
+                          api_key)
 
   {
 
@@ -108,25 +110,9 @@ planet_search <- function(bbox ,
     resID = res$features$id
     resDFid <- rbind(resDFid, data.frame(id = resID))
     }
-
-
-  response_doy <- as.numeric(
-    format(
-      as.Date.character(
-        str_split_fixed(
-          resDFid$id,
-          pattern = "_",n = 2)[,1],
-        format = "%Y%m%d"),
-      format = "%j")
-  )
-
-  response_doy <- (response_doy > start_doy & response_doy < end_doy)
-
-  resDFid_doy <- data.frame(resDFid[response_doy,])
-
+  
   print(paste(nrow(resDFid),"images ... between", date_start, "and", date_end))
-  print(paste(nrow(resDFid_doy),"images ... that meet all criteria"))
 
-  return(resDFid_doy)
+  return(resDFid)
 }
 

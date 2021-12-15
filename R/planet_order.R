@@ -1,52 +1,66 @@
 ##PlanetR search + Orders API for download
 
-planet_order <- function(aoi_dir = "/Users/DataLab/Desktop/Wine Project/SMV2.geojson",
-                         start_year = 2021,
-                         start_doy = 158,
-                         end_year = 2021,
-                         end_doy = 160,
-                         cloud_lim = 0.1,
-                         item_name = "PSScene4Band",
-                         product  = "analytic_sr",
-                         order = "AutomationTEST"){
-
-#remotes::install_github("bevingtona/planetR", force = T)
-#install.packages(c("here", "httr", "jsonlite", "raster","stringr"))
+#' A function to order Planet imagery
+#'
+#' This function allows you to search and order data from the Planet API
+#' @param api_key a string containing your API Key for your planet account
+#' @param bbox bounding box made with extent() from the raster package; must be EPSG:4326 Projection; no default.
+#' @param date_start a date object
+#' @param date_end a date object
+#' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
+#' @param item_name Defaults to "PSScene4Band".
+#' @param product Defaults to "analytic_sr"
+#' @param order The name you want to assign to your order. Defaults to "AutomationTEST"
+#' @keywords Planet
+#' @export
+#' @examples
+#' planet_search()
 
 library(sf)
-library(planetR)
 library(here)
 library(httr)
 library(jsonlite)
 library(raster)
 library(stringr)
 
+planet_order <- function(api_key,
+                         bbox,
+                         date_start= as.Date('2021-01-01', "%Y-%m-%d"),
+                         date_end= as.Date('2021-01-15', "%Y-%m-%d"),
+                         # start_year = 2021,
+                         # start_doy = 158,
+                         # end_year = 2021,
+                         # end_doy = 160,
+                         cloud_lim = 0.1,
+                         item_name = "PSScene4Band",
+                         product  = "analytic_sr",
+                         order = "AutomationTEST"){
 
-# insert api key here
-api_key = "" 
+
 
 #Create filters for PlanetR search
 
 # Date range of interest
 # Date range of interest
 
-date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
-date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
+# date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
+# date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
 
 
 # Set AOI - will be used to find all images that include AOI, later used to clip in Orders API
-my_aoi  = read_sf(aoi_dir)
-bbox    = extent(my_aoi)
+#my_aoi = read_sf(aoi_dir)
+#bbox  = extent(my_aoi)
 
 
 #SEARCH FOR IMAGES
 
 #uses the quick search url (more info: https://developers.planet.com/docs/apis/data/reference/#tag/Item-Search)
-response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name)
+response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name, api_key)
 
 #ORDER API
 
-items = response$resDFid.response_doy...[1:nrow(response)]
+#items = response$resDFid.response_doy...[1:nrow(response)]
+items = response$id
 products = list(list(item_ids = items, item_type = unbox(item_name), product_bundle = unbox(product)))
 
 aoi = list(
@@ -125,7 +139,7 @@ print(paste0("Download complete, items located in ", getwd(), "/", order_name))
 }
 
 # call function (you may have to change order name to one that hasn't already been used)
-planet_order(order = "AutomationTEST_1")
+#planet_order(order = "AutomationTEST_1")
 
 
 
