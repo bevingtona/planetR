@@ -99,19 +99,19 @@ planet_search <- function(bbox ,
   #send API request
   request <- httr::POST(url, body = body, content_type_json(), authenticate(api_key, ""))
 
-  resDF <- fromJSON(httr::content(request, as = "text"))
+  resDF <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
   res <- resDF
   resDFid <- data.frame(id =resDF$features$id)
 
 
   while(is.null(res$`_links`$`_next`)==FALSE){
     request <- httr::GET(httr::content(request)$`_links`$`_next`, content_type_json(), authenticate(api_key, ""))
-    res <- fromJSON(httr::content(request, as = "text"))
+    res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
     resID = res$features$id
     resDFid <- rbind(resDFid, data.frame(id = resID))
     }
-  
-  print(paste(nrow(resDFid),"images ... between", date_start, "and", date_end))
+
+  print(paste("Found",nrow(resDFid),"suitable images between", date_start, "and", date_end))
 
   return(resDFid)
 }
