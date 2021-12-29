@@ -111,7 +111,7 @@ planet_search <- function(bbox ,
     resDFid <- rbind(resDFid, data.frame(id = resID))
     }
 
-  print(paste("Found",nrow(resDFid),"suitable images between", date_start, "and", date_end))
+  print(paste("Found",nrow(resDFid),"suitable",item_name, product, "images between", date_start, "and", date_end))
 
   return(resDFid)
 }
