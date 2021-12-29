@@ -19,12 +19,14 @@
 library(httr)
 library(jsonlite)
 
-planet_search <- function(bbox ,
+planet_search <- function(bbox,
+                          start_doy = 298,
+                          end_doy = 300,
                           date_end = as.Date('2018-07-01'),
                           date_start = as.Date('2018-08-01'),
                           cloud_lim = 0.1,
                           item_name = "PSOrthoTile",
-                          api_key)
+                          api_key = "test")
 
   {
 
@@ -102,17 +104,25 @@ planet_search <- function(bbox ,
   resDF <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
   res <- resDF
   resDFid <- data.frame(id =resDF$features$id)
-
+  p = 1
 
   while(is.null(res$`_links`$`_next`)==FALSE){
     request <- httr::GET(httr::content(request)$`_links`$`_next`, content_type_json(), authenticate(api_key, ""))
     res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
     resID = res$features$id
     resDFid <- rbind(resDFid, data.frame(id = resID))
+    print(paste("Page",p))
+    p = p+1
     }
 
-  print(paste("Found",nrow(resDFid),"suitable",item_name, product, "images between", date_start, "and", date_end))
+  resDFid$date = as.Date.character(resDFid$id,format = "%Y%m%d")
+  resDFid$yday = as.numeric(format(resDFid$date, "%j"))
+  resDFid <- resDFid[resDFid$yday>=start_doy&resDFid$yday<=end_doy,]
 
-  return(resDFid)
+  print(paste("Found",nrow(resDFid),"suitable",item_name, product, "images"))
+  print(paste0("Day of year: ", start_doy, "-", end_doy))
+  print(paste0("Year: ", format(date_start,"%Y"), "-", format(date_end,"%Y")))
+
+  return(data.frame(resDFid[,1]))
 }
 
