@@ -43,7 +43,7 @@ planet_download = function(i, overwrite = T)
       print(t)
       activated = POST(content(activate)[[product]][["_links"]][["activate"]], authenticate(api_key, ""))
       if(activated$status_code != 204){
-        print(paste(activated$status_code, "retry in 10 seconds"))
+        print(paste("Status", activated$status_code, "retry in 10 seconds (download not ready)"))
         Sys.sleep(10)}
       else {break}}
 
