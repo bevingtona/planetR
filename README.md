@@ -38,61 +38,56 @@ This is an example of how to search, activate and download assets using `planetR
 
 ```{r example}
 
-#### STEP 1: LIBRARIES ####
-
-# remotes::install_github("bevingtona/planetR", force = T)
-# install.packages(c("here", "httr", "jsonlite", "raster","stringr))
-
+#### LIBRARIES ####
 library(planetR)
-library(here)
 library(httr)
 library(jsonlite)
 library(raster)
 library(stringr)
 
-#### STEP 2: USER VARIABLES ####
+#### USER VARIABLES ####
 
-  # Site name that will be used in the export folder name
-    site = "MySite"
+# Site name that will be used in the export folder name
+site = "MySite"
 
-  # Set Workspace (optional)
-    setwd("") # setwd(here())
+# Set Workspace (optional)
+setwd("")
 
-  # Set API (manually in the script or in a attached file)
-    # OPTION 1
-      api_key = as.character(read.csv("../api.csv")$api) 
-    # OPTION 2
-      api_key = "" 
+# Set API
+api_key = "" 
 
-  # Date range of interest
-    start_year = 2016
-    end_year   = 2020
-    start_doy  = 290 # OR FROM DATE as.numeric(format(as.Date('2000-07-15'),"%j"))
-    end_doy    = 300 # OR FROM DATE as.numeric(format(as.Date('2000-08-15'),"%j"))
-    date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
-    date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
+# Date range of interest
+start_year = 2016
+end_year   = 2020
+start_doy  = 290 # OR FROM DATE as.numeric(format(as.Date('2000-07-15'),"%j"))
+end_doy    = 300 # OR FROM DATE as.numeric(format(as.Date('2000-08-15'),"%j"))
+date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
+date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
 
-  # Metadata filters
-    cloud_lim    = 0.02 # percent from 0-1
-    item_name    = "PSScene4Band" #PSOrthoTile, PSScene3Band, Sentinel2L1C (see https://developers.planet.com/docs/data/items-assets/)
-    product      = "analytic_sr" #analytic_b1, analytic_b2 (see https://developers.planet.com/docs/data/items-assets/)
+# Metadata filters
+cloud_lim    = 0.02 # percent from 0-1
+item_name    = "PSScene4Band" 
+  # PSOrthoTile, PSScene3Band, Sentinel2L1C 
+  # (see https://developers.planet.com/docs/data/items-assets/)
+product      = "analytic_sr" 
+  # analytic_b1, analytic_b2 
+  # (see https://developers.planet.com/docs/data/items-assets/)
 
-  # Set AOI (many ways to set this!) ultimately just need an extent()
-    # OPTION 1: Import feature
-      my_aoi       = read_sf("path_to_file.sqlite") # KML, SHP, SQLITE, or other
-      bbox         = extent(my_aoi)
-    # OPTION 2: Digitize om map
-      my_aoi       = mapedit::editMap() # Set in GUI
-      bbox         = extent(my_aoi)
-    # OPTION 3: Set bounding box manually
-      bbox         = extent(-129,-127,50,51)
+# Set AOI (many ways to set this!) ultimately just need an extent()
+# OPTION 1: Import feature
+my_aoi       = read_sf("path_to_file.sqlite") # KML, SHP, SQLITE, or other
+bbox         = extent(my_aoi)
+# OPTION 2: Digitize om map
+my_aoi       = mapedit::editMap() # Set in GUI
+bbox         = extent(my_aoi)
+# OPTION 3: Set bounding box manually
+bbox         = extent(-129,-127,50,51)
 
-  # Set/Create Export Folder
-    exportfolder = paste(site, item_name, product, start_year, end_year, start_doy, end_doy, sep = "_")
-    dir.create(exportfolder, showWarnings = F)
+# Set/Create Export Folder
+exportfolder = paste(site, item_name, product, start_year, end_year, start_doy, end_doy, sep = "_")
+dir.create(exportfolder, showWarnings = F)
 
-#### Planet Orders API ####
-
+# Planet Orders API
 planet_order(api_key = api_key, 
              bbox = bbox, 
              date_start = date_start, 
@@ -110,18 +105,18 @@ OR
 
 ```{r example_v1}
 
-#### PLANET_SEARCH: Search API ####
+# PLANET_SEARCH: Search API
 
   response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name)
   print(paste("Images available:", nrow(response), item_name, product))
 
-#### PLANET_ACTIVATE: Batch Activate ####
+# PLANET_ACTIVATE: Batch Activate 
 
 for(i in 1:nrow(response)) {
   planet_activate(i, item_name = item_name)
   print(paste("Activating", i, "of", nrow(response)))}
 
-#### PLANET_DOWNLOAD: Batch Download ####
+# PLANET_DOWNLOAD: Batch Download 
 
 for(i in 1:nrow(response)) {
   planet_download(i)
