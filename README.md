@@ -1,19 +1,25 @@
 # planetR
 
-Some R tools to search, activate and download satellite imgery from the Planet API (https://developers.planet.com/docs/api/). The current purpose of the package is to Search the API, batch activate all assets, and then batch download them. 
+Some R tools to search, activate and download satellite imagery from the Planet API (https://developers.planet.com/docs/api/). The current purpose of the package is to Search the API, batch activate all assets, and then batch download them. 
 
-### Features
+There are two API's: 
+- v1 Planet API
+- v2 Planet Orders API (can clip and pre-process scenes to AOI on server)
+
+### Functions
 
 ```{r functions}
-## current functions
+
+## current functions (API v1)
 planetR::planet_search()
 planetR::planet_activate()
 planetR::planet_download()
 
-## in development
-planetR::planet_clip()
-planetR::planet_create_folder()
-planetR::planet_set_aoi()
+## current functions (Orders API v2)
+planetR::planet_order_request()
+planetR::planet_order_download()
+planetR::planet_order()
+
 ```
 
 ### Installation
@@ -26,17 +32,12 @@ remotes::install_github("bevingtona/planetR")
 library(planetR)
 ```
 
-### Usage
-
-Step 1: Search API (inspired from https://www.lentilcurtain.com/posts/accessing-planet-labs-data-api-from-r/)<br /> 
-Step 2: Write a loop to batch activate<br />
-Step 3: Write a loop to batch download
-
 #### Example
 
 This is an example of how to search, activate and download assets using `planetR`.
 
 ```{r example}
+
 #### STEP 1: LIBRARIES ####
 
 # remotes::install_github("bevingtona/planetR", force = T)
@@ -90,31 +91,42 @@ library(stringr)
     exportfolder = paste(site, item_name, product, start_year, end_year, start_doy, end_doy, sep = "_")
     dir.create(exportfolder, showWarnings = F)
 
-#### STEP 3: PLANET_SEARCH: Search API ####
+#### Planet Orders API ####
+
+planet_order(api_key = api_key, 
+             bbox = bbox, 
+             date_start = date_start, 
+             date_end = date_end, 
+             start_doy = start_doy, 
+             end_doy = end_doy, 
+             cloud_lim = cloud_lim, 
+             item_name = item_name, 
+             product = product,
+             order_name = exportfolder)
+
+```
+
+OR 
+
+```{r example_v1}
+
+#### PLANET_SEARCH: Search API ####
 
   response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name)
   print(paste("Images available:", nrow(response), item_name, product))
 
-#### STEP 4: PLANET_ACTIVATE: Batch Activate ####
+#### PLANET_ACTIVATE: Batch Activate ####
 
 for(i in 1:nrow(response)) {
   planet_activate(i, item_name = item_name)
   print(paste("Activating", i, "of", nrow(response)))}
 
-#### STEP 5: PLANET_DOWNLOAD: Batch Download ####
+#### PLANET_DOWNLOAD: Batch Download ####
 
 for(i in 1:nrow(response)) {
   planet_download(i)
   print(paste("Downloading", i, "of", nrow(response)))}
   
-#### STEP 5: PLANET_DOWNLOAD WITH CLIP IN PARALLEL #####
-
-library(future.apply)
-library(stars)
-library(sf)
-plan(multisession)
-future_lapply(1:nrow(response), planet_download_withClip, my_aoi = my_aoi)
-
 ```
 ![](images/download_example.png)
 
@@ -146,5 +158,3 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
-```
-
