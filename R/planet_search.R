@@ -101,15 +101,46 @@ planet_search <- function(bbox,
   #send API request
   request <- httr::POST(url, body = body, content_type_json(), authenticate(api_key, ""))
 
-  resDF <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
-  res <- resDF
-  resDFid <- data.frame(id =resDF$features$id)
+  # Read first page
+  res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
 
+  # Check Permissions
+
+  permissions <- do.call(rbind, lapply(1:length(res$features$`_permissions`),function(i){
+
+    permissions <- str_split(res$features$`_permissions`[[i]], ":", simplify = T)
+    permissions <- data.frame(id = res$features$id[i],
+                              i = i,
+                              asset = gsub("assets.","",permissions[,1]),
+                              permission = permissions[,2])
+    return(permissions)}))
+
+  resDFid <- permissions[permissions$asset==product,]
+
+  # Read following pages, if exist
   while(is.null(res$`_links`$`_next`)==FALSE){
     request <- httr::GET(httr::content(request)$`_links`$`_next`, content_type_json(), authenticate(api_key, ""))
     res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
-    resID = res$features$id
-    resDFid <- rbind(resDFid, data.frame(id = resID))}
+    # Check Permissions i = 59
+    permissions <- do.call(rbind, lapply(1:length(res$features$`_permissions`),function(i){
+      permissions <- str_split(res$features$`_permissions`[[i]], ":", simplify = T)
+      if(dim(permissions)[1]>0){
+      permissions <- data.frame(id = res$features$id[i],
+                                i = i,
+                                asset = gsub("assets.","",permissions[,1]),
+                                permission = permissions[,2])
+      }else{
+        permissions = data.frame(id = NA,
+                                 i = i,
+                                 asset = NA,
+                                 permission = NA)}
+      return(permissions)}))
+
+    permissions <- permissions[permissions$asset==product,]
+
+    resDFid <- rbind(resDFid, permissions)}
+
+  resDFid <- resDFid[!is.na(resDFid$id),]
 
   resDFid$date = as.Date.character(resDFid$id,format = "%Y%m%d")
   resDFid$yday = as.numeric(format(resDFid$date, "%j"))
@@ -118,6 +149,5 @@ planet_search <- function(bbox,
   print(paste("Found",nrow(resDFid),"suitable",item_name, product, "images"))
   print(paste0("Day of year: ", start_doy, "-", end_doy))
   print(paste0("Year: ", format(date_start,"%Y"), "-", format(date_end,"%Y")))
-
   return(data.frame(resDFid[,1]))
 }
