@@ -43,14 +43,20 @@ planet_download = function(i, overwrite = T)
       print(t)
       activated = POST(content(activate)[[product]][["_links"]][["activate"]], authenticate(api_key, ""))
       if(activated$status_code != 204){
+        if(t==1){
+          print("Please note: The first download can take up to 5 minutes to start after being activated")
+          }else{
         print(paste("Status", activated$status_code, "retry in 10 seconds (download not ready)"))
-        Sys.sleep(10)}
+        Sys.sleep(10)}}
       else {break}}
 
     activate = GET(contents$`_links`$assets, authenticate(api_key, ""))
+
+    print("Download")
+
     download = GET(content(activate)[[product]][["_links"]][["_self"]], authenticate(api_key, ""))
 
-    link = content(download, "parsed")
+    link = httr::content(download, "parsed")
 
     export = paste0(exportfolder, "/", contents$id,".tif")
 
