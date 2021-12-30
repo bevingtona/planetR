@@ -104,16 +104,12 @@ planet_search <- function(bbox,
   resDF <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
   res <- resDF
   resDFid <- data.frame(id =resDF$features$id)
-  p = 1
 
   while(is.null(res$`_links`$`_next`)==FALSE){
     request <- httr::GET(httr::content(request)$`_links`$`_next`, content_type_json(), authenticate(api_key, ""))
     res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
     resID = res$features$id
-    resDFid <- rbind(resDFid, data.frame(id = resID))
-    print(paste("Page",p))
-    p = p+1
-    }
+    resDFid <- rbind(resDFid, data.frame(id = resID))}
 
   resDFid$date = as.Date.character(resDFid$id,format = "%Y%m%d")
   resDFid$yday = as.numeric(format(resDFid$date, "%j"))
@@ -125,4 +121,3 @@ planet_search <- function(bbox,
 
   return(data.frame(resDFid[,1]))
 }
-
