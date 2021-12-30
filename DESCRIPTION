@@ -12,3 +12,12 @@ Description: Search, activate and download satellite imagery from the Planet API
 License: Apache License (== 2.0) | file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 4.0.0)
+Imports:
+    sf (>= 1.0-1),
+    here (>= 1.0.1),
+    httr (>= 1.4.2), 
+    raster (>= 3.1-5),
+    jsonlite (>= 1.7.2),
+    stringr (>= 1.4.0)
+Suggests: mapedit
