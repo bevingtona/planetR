@@ -32,7 +32,7 @@ remotes::install_github("bevingtona/planetR")
 library(planetR)
 ```
 
-#### Example
+#### Example using Planet Orders API v2
 
 This is an example of how to search, activate and download assets using `planetR`.
 
@@ -98,10 +98,63 @@ planet_order(api_key = api_key,
              item_name = item_name, 
              product = product,
              order_name = exportfolder)
+             
+
+[1] "Found 6 suitable PSScene4Band analytic_sr images"
+[1] "Day of year: 290-300"
+[1] "Year: 2016-2020"
+[1] "Save the Order ID: cd16bf13-2f18-47e1-84ad-1d3d280326e3"
+[1] "You can restart the download with `planet_order_download(order_id, order_name)`"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "queued"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Order still being proccessed, trying again in 60 seconds..."
+[1] "running"
+[1] "Starting download"
+[1] "Download: 4%"
+[1] "Download: 8%"
+[1] "Download: 10%"
+[1] "Download: 20%"
+[1] "Download: 20%"
+[1] "Download: 20%"
+[1] "Download: 30%"
+[1] "Download: 30%"
+[1] "Download: 40%"
+[1] "Download: 40%"
+[1] "Download: 40%"
+[1] "Download: 50%"
+[1] "Download: 50%"
+[1] "Download: 60%"
+[1] "Download: 60%"
+[1] "Download: 60%"
+[1] "Download: 70%"
+[1] "Download: 70%"
+[1] "Download: 80%"
+[1] "Download: 80%"
+[1] "Download: 80%"
+[1] "Download: 90%"
+[1] "Download: 90%"
+[1] "Download: 100%"
+[1] "Download: 100%"
+[1] "Download complete"
+[1] "Items located in ../MySite_PSScene4Band_analytic_sr_2016_2020_290_300"
 
 ```
 
-OR 
+#### Example using Planet API v1
 
 ```{r example_v1}
 
