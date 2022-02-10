@@ -143,10 +143,6 @@ planet_search <- function(bbox,
 
   if(unique(permissions$permission) == "download"){
     print(paste("You have DOWNLOAD permissions for these images."))
-  }else{
-    print(paste("You DO NOT have DOWNLOAD permissions for these images. You have", toupper(unique(permissions$permission)), "permission"))
-  }
-
 
   permissions$date = as.Date.character(permissions$id,format = "%Y%m%d")
   permissions$yday = as.numeric(format(permissions$date, "%j"))
@@ -166,5 +162,8 @@ planet_search <- function(bbox,
   }
 
   if(nrow(permissions)>0){
-    return(permissions$id)}
+    return(permissions$id)}else{
+      print(paste("You DO NOT have DOWNLOAD permissions for these images. You have", toupper(unique(permissions$permission)), "permission"))
+    }
+  }
 }
