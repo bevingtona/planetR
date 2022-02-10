@@ -19,14 +19,16 @@
 library(httr)
 library(jsonlite)
 
+
 planet_search <- function(bbox,
-                          start_doy = 298,
-                          end_doy = 300,
-                          date_end = as.Date('2018-07-01'),
-                          date_start = as.Date('2018-08-01'),
+                          start_doy = NULL,
+                          end_doy = NULL,
+                          date_end = NULL,
+                          date_start = NULL,
                           cloud_lim = 0.1,
                           item_name = "PSOrthoTile",
-                          api_key = "test")
+                          api_key = "test",
+                          list_dates = NULL)
 
   {
 
@@ -48,7 +50,6 @@ planet_search <- function(bbox,
     ))
   )
 
-
   # filter for items the overlap with our chosen geometry
   geometry_filter <- list(
     type= jsonlite::unbox("GeometryFilter"),
@@ -57,9 +58,16 @@ planet_search <- function(bbox,
   )
 
   #we will search for images for up to a month beforethe date we are interested in
+  if(is.null(list_dates)==FALSE){
 
-  dategte <- paste0(date_start,"T00:00:00.000Z")
-  datelte <- paste0(date_end,"T00:00:00.000Z")
+    dategte <- paste0(min(list_dates),"T00:00:00.000Z")
+    datelte <- paste0(max(list_dates),"T00:00:00.000Z")
+
+  }else{
+
+    dategte <- paste0(date_start,"T00:00:00.000Z")
+    datelte <- paste0(date_end,"T00:00:00.000Z")
+  }
 
   # filter images by daterange
   date_range_filter <- list(
@@ -100,54 +108,55 @@ planet_search <- function(bbox,
 
   #send API request
   request <- httr::POST(url, body = body, content_type_json(), authenticate(api_key, ""))
-
   # Read first page
   res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
 
-  # Check Permissions
+  check_permission <- function(res){
 
-  permissions <- do.call(rbind, lapply(1:length(res$features$`_permissions`),function(i){
+    # Check Permissions
+    permissions <- do.call(rbind, lapply(1:length(res$features$`_permissions`),function(i){
 
-    permissions <- str_split(res$features$`_permissions`[[i]], ":", simplify = T)
-    permissions <- data.frame(id = res$features$id[i],
-                              i = i,
-                              asset = gsub("assets.","",permissions[,1]),
-                              permission = permissions[,2])
-    return(permissions)}))
+      permissions <- str_split(res$features$`_permissions`[[i]], ":", simplify = T)
+      permissions <- data.frame(id = res$features$id[i],
+                                i = i,
+                                asset = gsub("assets.","",permissions[,1]),
+                                permission = permissions[,2])
+      return(permissions)}))
 
-  resDFid <- permissions[permissions$asset==product,]
+    resDFid <- permissions[permissions$asset==product,]
+    resDFid[resDFid$permission=="download",]
+    }
+
+  permissions <- check_permission(res)
 
   # Read following pages, if exist
   while(is.null(res$`_links`$`_next`)==FALSE){
     request <- httr::GET(httr::content(request)$`_links`$`_next`, content_type_json(), authenticate(api_key, ""))
     res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
-    # Check Permissions i = 59
-    permissions <- do.call(rbind, lapply(1:length(res$features$`_permissions`),function(i){
-      permissions <- str_split(res$features$`_permissions`[[i]], ":", simplify = T)
-      if(dim(permissions)[1]>0){
-      permissions <- data.frame(id = res$features$id[i],
-                                i = i,
-                                asset = gsub("assets.","",permissions[,1]),
-                                permission = permissions[,2])
-      }else{
-        permissions = data.frame(id = NA,
-                                 i = i,
-                                 asset = NA,
-                                 permission = NA)}
-      return(permissions)}))
+    if(is.null(unlist(res$features))==FALSE){
+      permissions <- rbind(permissions, check_permission(res))
+    }
+    }
 
-    permissions <- permissions[permissions$asset==product,]
+  permissions <- permissions[!is.na(permissions$id),]
 
-    resDFid <- rbind(resDFid, permissions)}
+  permissions$date = as.Date.character(permissions$id,format = "%Y%m%d")
+  permissions$yday = as.numeric(format(permissions$date, "%j"))
 
-  resDFid <- resDFid[!is.na(resDFid$id),]
+  if(is.null(list_dates)==FALSE){
 
-  resDFid$date = as.Date.character(resDFid$id,format = "%Y%m%d")
-  resDFid$yday = as.numeric(format(resDFid$date, "%j"))
-  resDFid <- resDFid[resDFid$yday>=start_doy&resDFid$yday<=end_doy,]
+    permissions <- permissions[permissions$date %in% list_dates,]
+    print(paste("Found",nrow(permissions),"suitable",item_name, product, "images that you have permission to download."))
+    print(paste("In list of",length(list_dates), "dates from", min(list_dates),"to", max(list_dates)))
 
-  print(paste("Found",nrow(resDFid),"suitable",item_name, product, "images"))
-  print(paste0("Day of year: ", start_doy, "-", end_doy))
-  print(paste0("Year: ", format(date_start,"%Y"), "-", format(date_end,"%Y")))
-  return(data.frame(resDFid[,1]))
+  }else{
+
+    permissions <- permissions[permissions$yday>=start_doy&permissions$yday<=end_doy,]
+    print(paste("Found",nrow(permissions),"suitable",item_name, product, "images that you have permission to download."))
+    print(paste("Between yday:", start_doy, "to", end_doy))
+
+  }
+
+  if(nrow(permissions)>0){
+    return(permissions$id)}
 }
