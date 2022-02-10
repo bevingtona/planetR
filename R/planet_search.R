@@ -140,6 +140,8 @@ planet_search <- function(bbox,
 
   permissions <- permissions[!is.na(permissions$id),]
 
+  print(paste("You have", toupper(unique(permissions$permission)),"permissions for these images."))
+
   permissions$date = as.Date.character(permissions$id,format = "%Y%m%d")
   permissions$yday = as.numeric(format(permissions$date, "%j"))
 
