@@ -30,28 +30,38 @@ planet_order_request <-
            date_end,
            start_doy,
            end_doy,
+           list_dates,
            cloud_lim,
            item_name,
            product,
            order_name = exportfolder) {
     #SEARCH FOR IMAGES
 
-    response <- planet_search(bbox,
-                              start_doy,
-                              end_doy,
-                              date_end,
-                              date_start,
-                              cloud_lim,
-                              item_name,
-                              api_key)
+    if(is.null(list_dates)==FALSE){
+
+      items <- planet_search(bbox=bbox,
+                             list_dates=list_dates,
+                             cloud_lim=cloud_lim,
+                             item_name=item_name,
+                             api_key=api_key)
+
+    }else{
+
+      items <- planet_search(bbox=bbox,
+                             start_doy=start_doy,
+                             end_doy=end_doy,
+                             date_end=date_end,
+                             date_start=date_start,
+                             cloud_lim=cloud_lim,
+                             item_name=item_name,
+                             api_key=api_key)
+
+    }
+
 
 
 
     #ORDER API
-
-    items = response[, 1]
-
-
     products = list(
       list(
         item_ids = items,
@@ -84,6 +94,7 @@ planet_order_request <-
       list(name = order_name,
            products = products,
            tools = tools)
+
     order_json <- jsonlite::toJSON(order_body, pretty = TRUE)
 
     url = "https://api.planet.com/compute/ops/orders/v2"
@@ -204,22 +215,38 @@ planet_order <- function(api_key,
                          date_end,
                          start_doy,
                          end_doy,
+                         list_dates,
                          cloud_lim,
                          item_name,
                          product,
                          order_name) {
-  order_id <- planet_order_request(
-    api_key,
-    bbox,
-    date_start,
-    date_end,
-    start_doy,
-    end_doy,
-    cloud_lim,
-    item_name,
-    product,
-    order_name = "test"
-  )
+
+
+  if(is.null(list_dates)==FALSE){
+
+    order_id <- planet_order_request(bbox=bbox,
+                           list_dates=list_dates,
+                           cloud_lim=cloud_lim,
+                           item_name=item_name,
+                           product=product,
+                           order_name=order_name,
+                           api_key=api_key)
+
+  }else{
+
+    order_id <- planet_order_request(bbox=bbox,
+                           start_doy=start_doy,
+                           end_doy=end_doy,
+                           date_end=date_end,
+                           date_start=date_start,
+                           cloud_lim=cloud_lim,
+                           item_name=item_name,
+                           product=product,
+                           order_name=order_name,
+                           api_key=api_key)
+
+
+  }
 
   planet_order_download(order_id, order_name)
 
