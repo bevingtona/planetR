@@ -30,7 +30,7 @@ planet_order_request <-
            date_end,
            start_doy,
            end_doy,
-           list_dates,
+           list_dates=NULL,
            cloud_lim,
            item_name,
            product,
@@ -38,7 +38,7 @@ planet_order_request <-
     #SEARCH FOR IMAGES
 
     if(is.null(list_dates)==FALSE){
-
+      print("Search from date list")
       items <- planet_search(bbox=bbox,
                              list_dates=list_dates,
                              cloud_lim=cloud_lim,
@@ -46,7 +46,7 @@ planet_order_request <-
                              api_key=api_key)
 
     }else{
-
+      print("Search from yday and year ranges")
       items <- planet_search(bbox=bbox,
                              start_doy=start_doy,
                              end_doy=end_doy,
@@ -215,7 +215,7 @@ planet_order <- function(api_key,
                          date_end,
                          start_doy,
                          end_doy,
-                         list_dates,
+                         list_dates=NULL,
                          cloud_lim,
                          item_name,
                          product,
