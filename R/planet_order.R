@@ -34,7 +34,8 @@ planet_order_request <-
            cloud_lim,
            item_name,
            product,
-           order_name = exportfolder) {
+           order_name = exportfolder,
+           mostrecent) {
     #SEARCH FOR IMAGES
 
     if(is.null(list_dates)==FALSE){
@@ -58,7 +59,10 @@ planet_order_request <-
 
     }
 
-
+    if(mostrecent > 0){
+      items = sort(items, decreasing = T)[1:mostrecent]
+      print(paste("Selected",mostrecent,"most recent images."))
+    }
 
 
     #ORDER API
@@ -203,6 +207,7 @@ planet_order_download <- function(order_id, order_name) {
 #' @param item_name Defaults to "PSScene4Band".
 #' @param product Defaults to "analytic_sr"
 #' @param order_name The name you want to assign to your order
+#' @param mostrecent Integer of how many of the most recent images will be downloaded. Default is 0 (download all images).
 #' @keywords Planet
 #' @export
 #' @examples
@@ -219,7 +224,8 @@ planet_order <- function(api_key,
                          cloud_lim,
                          item_name,
                          product,
-                         order_name) {
+                         order_name,
+                         mostrecent = 0) {
 
 
   if(is.null(list_dates)==FALSE){
@@ -243,7 +249,8 @@ planet_order <- function(api_key,
                            item_name=item_name,
                            product=product,
                            order_name=order_name,
-                           api_key=api_key)
+                           api_key=api_key,
+                           mostrecent=mostrecent)
 
 
   }
@@ -251,3 +258,4 @@ planet_order <- function(api_key,
   planet_order_download(order_id, order_name)
 
 }
+
