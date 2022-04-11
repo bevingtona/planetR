@@ -9,7 +9,7 @@
 #' @param date_end a date object
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSScene4Band".
-#' @param product Defaults to "analytic_sr"
+#' @param product_bundle Defaults to "analytic_sr"
 #' @param order The name you want to assign to your order. Defaults to "AutomationTEST"
 #' @keywords Planet
 #' @export
@@ -31,7 +31,8 @@ planet_order_request <-
            list_dates=NULL,
            cloud_lim,
            item_name,
-           product,
+           product_bundle,
+           asset,
            order_name = exportfolder,
            mostrecent) {
     #SEARCH FOR IMAGES
@@ -42,6 +43,7 @@ planet_order_request <-
                              list_dates=list_dates,
                              cloud_lim=cloud_lim,
                              item_name=item_name,
+                             asset = asset,
                              api_key=api_key)
 
     }else{
@@ -51,6 +53,7 @@ planet_order_request <-
                              date_start=date_start,
                              cloud_lim=cloud_lim,
                              item_name=item_name,
+                             asset = asset,
                              api_key=api_key)
 
     }
@@ -66,7 +69,7 @@ planet_order_request <-
       list(
         item_ids = items,
         item_type = jsonlite::unbox(item_name),
-        product_bundle = jsonlite::unbox(product)
+        product_bundle = jsonlite::unbox(product_bundle)
       )
     )
 
@@ -112,8 +115,6 @@ planet_order_request <-
       print(post_content$field$Details[[1]]$message)
     }
 
-
-    print(post_content)
     order_id <- post_content$id
 
     print(paste("Save the Order ID:", order_id))
@@ -133,7 +134,7 @@ planet_order_request <-
 #' @export
 #' @examples
 
-planet_order_download <- function(order_id, order_name) {
+planet_order_download <- function(order_id, order_name, api_key) {
   #GET order for download
   #If you lose the order_id, don't redo the request, log onto planet and find it in the orders menu
   #order_id for example SMV2 order: "dab92990-ce3a-456c-8ad6-ca0c569b4a1a"
@@ -201,7 +202,7 @@ planet_order_download <- function(order_id, order_name) {
 #' @param date_end doy start
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSScene4Band".
-#' @param product Defaults to "analytic_sr"
+#' @param product_bundle Defaults to "analytic_sr"
 #' @param order_name The name you want to assign to your order
 #' @param mostrecent Integer of how many of the most recent images will be downloaded. Default is 0 (download all images).
 #' @keywords Planet
@@ -217,7 +218,8 @@ planet_order <- function(api_key,
                          list_dates=NULL,
                          cloud_lim,
                          item_name,
-                         product,
+                         product_bundle,
+                         asset,
                          order_name,
                          mostrecent = 0) {
 
@@ -228,7 +230,8 @@ planet_order <- function(api_key,
                            list_dates=list_dates,
                            cloud_lim=cloud_lim,
                            item_name=item_name,
-                           product=product,
+                           product_bundle=product_bundle,
+                           asset = asset,
                            order_name=order_name,
                            api_key=api_key)
 
@@ -239,7 +242,8 @@ planet_order <- function(api_key,
                            date_start=date_start,
                            cloud_lim=cloud_lim,
                            item_name=item_name,
-                           product=product,
+                           asset = asset,
+                           product_bundle=product_bundle,
                            order_name=order_name,
                            api_key=api_key,
                            mostrecent=mostrecent)
@@ -247,7 +251,7 @@ planet_order <- function(api_key,
 
   }
 
-  planet_order_download(order_id, order_name)
+  planet_order_download(order_id, order_name, api_key = api_key)
 
 }
 

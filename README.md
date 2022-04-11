@@ -88,13 +88,15 @@ dir.create("exports"", showWarnings = F)
 dir.create(file.path("exports", exportfolder), showWarnings = F)
 
 # Planet Orders API
+
 planet_order(api_key = api_key, 
              bbox = bbox, 
-             date_start = date_start, 
-             date_end = date_end, 
+             date_end = date_end,
+             date_start = date_start,
              cloud_lim = cloud_lim, 
-             item_name = item_name, 
-             product = product,
+             item_name = "PSScene", 
+             product_bundle = "analytic_8b_sr_udm2",
+             asset = "ortho_analytic_8b_sr",
              mostrecent = 1, # downloads the 1 most recent image
              order_name = exportfolder)
              
