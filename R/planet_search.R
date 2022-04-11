@@ -21,8 +21,6 @@ library(jsonlite)
 
 
 planet_search <- function(bbox,
-                          start_doy = NULL,
-                          end_doy = NULL,
                           date_end = NULL,
                           date_start = NULL,
                           cloud_lim = 0.1,
@@ -140,7 +138,6 @@ planet_search <- function(bbox,
 
   permissions <- permissions[!is.na(permissions$id),]
 
-
   if(unique(permissions$permission) == "download"){
     print(paste("You have DOWNLOAD permissions for these images."))
 
@@ -155,7 +152,10 @@ planet_search <- function(bbox,
 
   }else{
 
-    permissions <- permissions[permissions$yday>=start_doy&permissions$yday<=end_doy,]
+    start_doy <- lubridate::yday(date_start)
+    end_doy <- lubridate::yday(date_end)
+
+    permissions <- permissions[permissions$yday>=start_doy & permissions$yday<=end_doy,]
     print(paste("Found",nrow(permissions),"suitable",item_name, product, "images that you have permission to download."))
     print(paste("Between yday:", start_doy, "to", end_doy))
 
