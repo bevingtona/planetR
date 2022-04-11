@@ -112,6 +112,8 @@ planet_order_request <-
       print(post_content$field$Details[[1]]$message)
     }
 
+
+    print(post_content)
     order_id <- post_content$id
 
     print(paste("Save the Order ID:", order_id))

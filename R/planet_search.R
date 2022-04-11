@@ -25,6 +25,7 @@ planet_search <- function(bbox,
                           date_start = NULL,
                           cloud_lim = 0.1,
                           item_name = "PSOrthoTile",
+                          asset = "ortho_analytic_8b_sr" ,
                           api_key = "test",
                           list_dates = NULL)
 
@@ -121,7 +122,7 @@ planet_search <- function(bbox,
                                 permission = permissions[,2])
       return(permissions)}))
 
-    resDFid <- permissions[permissions$asset==product,]
+    resDFid <- permissions[permissions$asset==asset,]
     resDFid[resDFid$permission=="download",]
     }
 
@@ -147,7 +148,7 @@ planet_search <- function(bbox,
   if(is.null(list_dates)==FALSE){
 
     permissions <- permissions[permissions$date %in% list_dates,]
-    print(paste("Found",nrow(permissions),"suitable",item_name, product, "images that you have permission to download."))
+    print(paste("Found",nrow(permissions),"suitable",item_name, asset, "images that you have permission to download."))
     print(paste("In list of",length(list_dates), "dates from", min(list_dates),"to", max(list_dates)))
 
   }else{
@@ -156,7 +157,7 @@ planet_search <- function(bbox,
     end_doy <- lubridate::yday(date_end)
 
     permissions <- permissions[permissions$yday>=start_doy & permissions$yday<=end_doy,]
-    print(paste("Found",nrow(permissions),"suitable",item_name, product, "images that you have permission to download."))
+    print(paste("Found",nrow(permissions),"suitable",item_name, asset, "images that you have permission to download."))
     print(paste("Between yday:", start_doy, "to", end_doy))
 
   }

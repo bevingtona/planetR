@@ -65,7 +65,7 @@ cloud_lim <- 0.02 # percent from 0-1
 item_name <- "PSScene" 
   # PSOrthoTile, Sentinel2L1C 
   # (see https://developers.planet.com/docs/data/items-assets/)
-product <- "ortho_analytic_8b_sr" 
+asset <- "ortho_analytic_8b_sr" 
   # (see https://developers.planet.com/docs/data/items-assets/)
 
 # Set AOI (many ways to set this!) ultimately just need an extent()
@@ -79,7 +79,7 @@ bbox         = extent(my_aoi)
 bbox         = extent(-129,-127,50,51)
 
 # Set/Create Export Folder
-exportfolder <- paste(site, item_name, product, lubridate::year(date_start), lubridate::year(date_end),  lubridate::yday(date_start),  lubridate::yday(date_end), sep = "_")
+exportfolder <- paste(site, item_name, asset, lubridate::year(date_start), lubridate::year(date_end),  lubridate::yday(date_start),  lubridate::yday(date_end), sep = "_")
 
 if(!(dir.exists("exports"))){
 dir.create("exports"", showWarnings = F)
@@ -95,6 +95,7 @@ planet_order(api_key = api_key,
              cloud_lim = cloud_lim, 
              item_name = item_name, 
              product = product,
+             mostrecent = 1, # downloads the 1 most recent image
              order_name = exportfolder)
              
 
@@ -163,9 +164,10 @@ planet_order(api_key = api_key,
               date_start = date_start,
               cloud_lim = cloud_lim,
               item_name = item_name,
+              asset = asset,
               api_key = api_key)
               
-  print(paste("Images available:", length(response), item_name, product))
+  print(paste("Images available:", length(response), item_name, asset))
 
 # PLANET_ACTIVATE: Batch Activate 
 
