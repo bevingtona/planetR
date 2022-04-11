@@ -1,3 +1,4 @@
+.Rhistory
 .Rproj.user
 api.csv
 .gitattributes
@@ -5,3 +6,4 @@ api.csv
 .DS_Store
 example
 R/old_planet_download_withClip.R
+/exports

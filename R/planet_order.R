@@ -28,8 +28,6 @@ planet_order_request <-
            bbox,
            date_start,
            date_end,
-           start_doy,
-           end_doy,
            list_dates=NULL,
            cloud_lim,
            item_name,
@@ -49,8 +47,6 @@ planet_order_request <-
     }else{
       print("Search from yday and year ranges")
       items <- planet_search(bbox=bbox,
-                             start_doy=start_doy,
-                             end_doy=end_doy,
                              date_end=date_end,
                              date_start=date_start,
                              cloud_lim=cloud_lim,
@@ -201,8 +197,6 @@ planet_order_download <- function(order_id, order_name) {
 #' @param bbox bounding box made with extent() from the raster package; must be EPSG:4326 Projection; no default.
 #' @param date_start a date object
 #' @param date_end doy start
-#' @param start_doy doy end
-#' @param end_doy a date object
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSScene4Band".
 #' @param product Defaults to "analytic_sr"
@@ -218,8 +212,6 @@ planet_order <- function(api_key,
                          bbox,
                          date_start,
                          date_end,
-                         start_doy,
-                         end_doy,
                          list_dates=NULL,
                          cloud_lim,
                          item_name,
@@ -241,8 +233,6 @@ planet_order <- function(api_key,
   }else{
 
     order_id <- planet_order_request(bbox=bbox,
-                           start_doy=start_doy,
-                           end_doy=end_doy,
                            date_end=date_end,
                            date_start=date_start,
                            cloud_lim=cloud_lim,

@@ -79,16 +79,19 @@ bbox         = extent(my_aoi)
 bbox         = extent(-129,-127,50,51)
 
 # Set/Create Export Folder
-exportfolder = paste(site, item_name, product, start_year, end_year, start_doy, end_doy, sep = "_")
-dir.create(exportfolder, showWarnings = F)
+exportfolder <- paste(site, item_name, product, lubridate::year(date_start), lubridate::year(date_end),  lubridate::yday(date_start),  lubridate::yday(date_end), sep = "_")
+
+if(!(dir.exists("exports"))){
+dir.create("exports"", showWarnings = F)
+}
+
+dir.create(file.path("exports", exportfolder), showWarnings = F)
 
 # Planet Orders API
 planet_order(api_key = api_key, 
              bbox = bbox, 
              date_start = date_start, 
              date_end = date_end, 
-             start_doy = start_doy, 
-             end_doy = end_doy, 
              cloud_lim = cloud_lim, 
              item_name = item_name, 
              product = product,
