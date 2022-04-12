@@ -5,6 +5,7 @@
 #' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
 #' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
+#' @param ground_control Defaults to TRUE, filter images to only those with ground control, ensures locational accuracy of 10 m RMSE or better
 #' @param item_name Defaults to "PSOrthoTile".
 #' @param api_key your planet api key string
 #' @keywords Planet
@@ -24,6 +25,7 @@ planet_search <- function(bbox,
                           date_end = NULL,
                           date_start = NULL,
                           cloud_lim = 0.1,
+                          ground_control = TRUE,
                           item_name = "PSOrthoTile",
                           asset = "ortho_analytic_8b_sr" ,
                           api_key = "test",
@@ -86,10 +88,20 @@ planet_search <- function(bbox,
       lte= jsonlite::unbox(cloud_lim))
   )
 
+  # filter by ground control
+  gc_filter <- list(
+    type= jsonlite::unbox("NotFilter"),
+    config = list(
+      field_name= jsonlite::unbox("ground_control"),
+      type= jsonlite::unbox("StringInFilter"),
+      config = list(jsonlite::unbox(tolower(!ground_control)))
+    )
+  )
+
   # combine filters
   filter_configs <- list(
     type= jsonlite::unbox("AndFilter"),
-    config = list(date_range_filter, cloud_cover_filter,geometry_filter) #, coverage_filter
+    config = list(date_range_filter, cloud_cover_filter, gc_filter, geometry_filter) #, coverage_filter
   )
 
   #build request
