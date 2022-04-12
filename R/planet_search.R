@@ -127,7 +127,7 @@ planet_search <- function(bbox,
     # Check Permissions
     permissions <- do.call(rbind, lapply(1:length(res$features$`_permissions`),function(i){
 
-      permissions <- str_split(res$features$`_permissions`[[i]], ":", simplify = T)
+      permissions <- stringr::str_split(res$features$`_permissions`[[i]], ":", simplify = T)
       permissions <- data.frame(id = res$features$id[i],
                                 i = i,
                                 asset = gsub("assets.","",permissions[,1]),
