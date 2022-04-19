@@ -201,8 +201,9 @@ planet_order_download <- function(order_id, order_name, api_key) {
 #' @param date_start a date object
 #' @param date_end doy start
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
-#' @param item_name Defaults to "PSScene4Band".
-#' @param product_bundle Defaults to "analytic_sr"
+#' @param item_name Defaults to "PSScene".
+#' @param product_bundle Defaults to "analytic_sr_udm2
+#' @param asset Defaults to "ortho_analytic_4b_sr"
 #' @param order_name The name you want to assign to your order
 #' @param mostrecent Integer of how many of the most recent images will be downloaded. Default is 0 (download all images).
 #' @keywords Planet
@@ -217,9 +218,9 @@ planet_order <- function(api_key,
                          date_end,
                          list_dates=NULL,
                          cloud_lim,
-                         item_name,
-                         product_bundle,
-                         asset,
+                         item_name="PSScene",
+                         product_bundle="analytic_sr_udm2",
+                         asset="ortho_analytic_4b_sr",
                          order_name,
                          mostrecent = 0) {
 
@@ -254,4 +255,3 @@ planet_order <- function(api_key,
   planet_order_download(order_id, order_name, api_key = api_key)
 
 }
-
