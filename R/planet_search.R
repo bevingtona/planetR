@@ -22,13 +22,13 @@ library(httr)
 library(jsonlite)
 
 
-planet_search <- function(bbox,
+planet_search <- function(bbox=bbox,
                           date_end = NULL,
                           date_start = NULL,
                           cloud_lim = 0.1,
                           ground_control = TRUE,
                           quality = "standard",
-                          item_name = "PSOrthoTile",
+                          item_name = "PSScene",
                           asset = "ortho_analytic_8b_sr" ,
                           api_key = "test",
                           list_dates = NULL)
@@ -130,9 +130,9 @@ planet_search <- function(bbox,
   body <- body_json
 
   #send API request
-  request <- httr::POST(url, body = body, content_type_json(), authenticate(api_key, ""))
+  request <- httr::POST(url, body = body, httr::content_type_json(), httr::authenticate(api_key, ""))
   # Read first page
-  res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
+  res <- jsonlite::fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
 
   check_permission <- function(res){
 
@@ -154,8 +154,8 @@ planet_search <- function(bbox,
 
   # Read following pages, if exist
   while(is.null(res$`_links`$`_next`)==FALSE){
-    request <- httr::GET(httr::content(request)$`_links`$`_next`, content_type_json(), authenticate(api_key, ""))
-    res <- fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
+    request <- httr::GET(httr::content(request)$`_links`$`_next`, httr::content_type_json(), httr::authenticate(api_key, ""))
+    res <- jsonlite::fromJSON(httr::content(request, as = "text", encoding = "UTF-8"))
     if(is.null(unlist(res$features))==FALSE){
       permissions <- rbind(permissions, check_permission(res))
     }
