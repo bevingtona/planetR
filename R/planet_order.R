@@ -178,7 +178,7 @@ planet_order_download <- function(order_id, order_name, api_key) {
       "GET",
       url = download_url,
       username = api_key,
-      write_disk(
+      httr::write_disk(
         path = paste(order_name, filename, sep = "/"),
         overwrite = TRUE
       )
