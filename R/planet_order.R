@@ -24,7 +24,7 @@ library(raster)
 library(stringr)
 
 planet_order_request <-
-  function(api_key,
+  function(api_key,x
            bbox,
            date_start,
            date_end,
