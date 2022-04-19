@@ -5,6 +5,8 @@
 #' @param date_end Expects as.Date; defaults to as.Date('2018-07-01')
 #' @param date_start Expects as.Date; defaults to as.Date('2018-08-01')
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
+#' @param ground_control Defaults to TRUE, filter images to only those with ground control, ensures locational accuracy of 10 m RMSE or better
+#' @param quality Defaults to "standard", other option is "test" see https://support.planet.com/hc/en-us/articles/4407808871697-Image-quality-Standard-vs-Test-imagery
 #' @param item_name Defaults to "PSOrthoTile".
 #' @param api_key your planet api key string
 #' @keywords Planet
@@ -21,12 +23,13 @@ library(jsonlite)
 
 
 planet_search <- function(bbox,
-                          start_doy = NULL,
-                          end_doy = NULL,
                           date_end = NULL,
                           date_start = NULL,
                           cloud_lim = 0.1,
+                          ground_control = TRUE,
+                          quality = "standard",
                           item_name = "PSOrthoTile",
+                          asset = "ortho_analytic_8b_sr" ,
                           api_key = "test",
                           list_dates = NULL)
 
@@ -87,10 +90,30 @@ planet_search <- function(bbox,
       lte= jsonlite::unbox(cloud_lim))
   )
 
+  # filter by ground control
+  gc_filter <- list(
+    type= jsonlite::unbox("NotFilter"),
+    config = list(
+      field_name= jsonlite::unbox("ground_control"),
+      type= jsonlite::unbox("StringInFilter"),
+      config = list(jsonlite::unbox(tolower(!ground_control)))
+    )
+  )
+
+  # filter by quality
+  quality_filter <- list(
+    type = jsonlite::unbox("NotFilter"),
+    config = list(
+      field_name= jsonlite::unbox("quality_category"),
+      type= jsonlite::unbox("StringInFilter"),
+      config = list(jsonlite::unbox(quality))
+    )
+  )
+
   # combine filters
   filter_configs <- list(
     type= jsonlite::unbox("AndFilter"),
-    config = list(date_range_filter, cloud_cover_filter,geometry_filter) #, coverage_filter
+    config = list(date_range_filter, cloud_cover_filter, gc_filter, quality_filter, geometry_filter) #, coverage_filter
   )
 
   #build request
@@ -116,14 +139,14 @@ planet_search <- function(bbox,
     # Check Permissions
     permissions <- do.call(rbind, lapply(1:length(res$features$`_permissions`),function(i){
 
-      permissions <- str_split(res$features$`_permissions`[[i]], ":", simplify = T)
+      permissions <- stringr::str_split(res$features$`_permissions`[[i]], ":", simplify = T)
       permissions <- data.frame(id = res$features$id[i],
                                 i = i,
                                 asset = gsub("assets.","",permissions[,1]),
                                 permission = permissions[,2])
       return(permissions)}))
 
-    resDFid <- permissions[permissions$asset==product,]
+    resDFid <- permissions[permissions$asset==asset,]
     resDFid[resDFid$permission=="download",]
     }
 
@@ -140,7 +163,6 @@ planet_search <- function(bbox,
 
   permissions <- permissions[!is.na(permissions$id),]
 
-
   if(unique(permissions$permission) == "download"){
     print(paste("You have DOWNLOAD permissions for these images."))
 
@@ -150,13 +172,16 @@ planet_search <- function(bbox,
   if(is.null(list_dates)==FALSE){
 
     permissions <- permissions[permissions$date %in% list_dates,]
-    print(paste("Found",nrow(permissions),"suitable",item_name, product, "images that you have permission to download."))
+    print(paste("Found",nrow(permissions),"suitable",item_name, asset, "images that you have permission to download."))
     print(paste("In list of",length(list_dates), "dates from", min(list_dates),"to", max(list_dates)))
 
   }else{
 
-    permissions <- permissions[permissions$yday>=start_doy&permissions$yday<=end_doy,]
-    print(paste("Found",nrow(permissions),"suitable",item_name, product, "images that you have permission to download."))
+    start_doy <- lubridate::yday(date_start)
+    end_doy <- lubridate::yday(date_end)
+
+    permissions <- permissions[permissions$yday>=start_doy & permissions$yday<=end_doy,]
+    print(paste("Found",nrow(permissions),"suitable",item_name, asset, "images that you have permission to download."))
     print(paste("Between yday:", start_doy, "to", end_doy))
 
   }

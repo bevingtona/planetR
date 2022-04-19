@@ -57,20 +57,15 @@ setwd("")
 api_key = "" 
 
 # Date range of interest
-start_year = 2016
-end_year   = 2020
-start_doy  = 290 # OR FROM DATE as.numeric(format(as.Date('2000-07-15'),"%j"))
-end_doy    = 300 # OR FROM DATE as.numeric(format(as.Date('2000-08-15'),"%j"))
-date_start = as.Date(paste0(start_year,"-01-01"))+start_doy
-date_end   = as.Date(paste0(end_year,"-01-01"))+end_doy
+date_start <- as.Date("2022-01-01")
+date_end   <- as.Date("2022-04-01")
 
 # Metadata filters
-cloud_lim    = 0.02 # percent from 0-1
-item_name    = "PSScene4Band" 
-  # PSOrthoTile, PSScene3Band, Sentinel2L1C 
+cloud_lim <- 0.02 # percent from 0-1
+item_name <- "PSScene" 
+  # PSOrthoTile, Sentinel2L1C 
   # (see https://developers.planet.com/docs/data/items-assets/)
-product      = "analytic_sr" 
-  # analytic_b1, analytic_b2 
+asset <- "ortho_analytic_8b_sr" 
   # (see https://developers.planet.com/docs/data/items-assets/)
 
 # Set AOI (many ways to set this!) ultimately just need an extent()
@@ -84,19 +79,25 @@ bbox         = extent(my_aoi)
 bbox         = extent(-129,-127,50,51)
 
 # Set/Create Export Folder
-exportfolder = paste(site, item_name, product, start_year, end_year, start_doy, end_doy, sep = "_")
-dir.create(exportfolder, showWarnings = F)
+exportfolder <- paste(site, item_name, asset, lubridate::year(date_start), lubridate::year(date_end),  lubridate::yday(date_start),  lubridate::yday(date_end), sep = "_")
+
+if(!(dir.exists("exports"))){
+dir.create("exports"", showWarnings = F)
+}
+
+dir.create(file.path("exports", exportfolder), showWarnings = F)
 
 # Planet Orders API
+
 planet_order(api_key = api_key, 
              bbox = bbox, 
-             date_start = date_start, 
-             date_end = date_end, 
-             start_doy = start_doy, 
-             end_doy = end_doy, 
+             date_end = date_end,
+             date_start = date_start,
              cloud_lim = cloud_lim, 
-             item_name = item_name, 
-             product = product,
+             item_name = "PSScene", 
+             product_bundle = "analytic_8b_sr_udm2",
+             asset = "ortho_analytic_8b_sr",
+             mostrecent = 1, # downloads the 1 most recent image
              order_name = exportfolder)
              
 
@@ -160,8 +161,15 @@ planet_order(api_key = api_key,
 
 # PLANET_SEARCH: Search API
 
-  response <- planet_search(bbox, date_end, date_start, cloud_lim, item_name)
-  print(paste("Images available:", nrow(response), item_name, product))
+  response <- planet_search(bbox = bbox,
+              date_end = date_end,
+              date_start = date_start,
+              cloud_lim = cloud_lim,
+              item_name = item_name,
+              asset = asset,
+              api_key = api_key)
+              
+  print(paste("Images available:", length(response), item_name, asset))
 
 # PLANET_ACTIVATE: Batch Activate 
 

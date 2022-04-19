@@ -9,7 +9,7 @@
 #' @param date_end a date object
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSScene4Band".
-#' @param product Defaults to "analytic_sr"
+#' @param product_bundle Defaults to "analytic_sr"
 #' @param order The name you want to assign to your order. Defaults to "AutomationTEST"
 #' @keywords Planet
 #' @export
@@ -28,12 +28,11 @@ planet_order_request <-
            bbox,
            date_start,
            date_end,
-           start_doy,
-           end_doy,
            list_dates=NULL,
            cloud_lim,
            item_name,
-           product,
+           product_bundle,
+           asset,
            order_name = exportfolder,
            mostrecent) {
     #SEARCH FOR IMAGES
@@ -44,17 +43,17 @@ planet_order_request <-
                              list_dates=list_dates,
                              cloud_lim=cloud_lim,
                              item_name=item_name,
+                             asset = asset,
                              api_key=api_key)
 
     }else{
       print("Search from yday and year ranges")
       items <- planet_search(bbox=bbox,
-                             start_doy=start_doy,
-                             end_doy=end_doy,
                              date_end=date_end,
                              date_start=date_start,
                              cloud_lim=cloud_lim,
                              item_name=item_name,
+                             asset = asset,
                              api_key=api_key)
 
     }
@@ -70,7 +69,7 @@ planet_order_request <-
       list(
         item_ids = items,
         item_type = jsonlite::unbox(item_name),
-        product_bundle = jsonlite::unbox(product)
+        product_bundle = jsonlite::unbox(product_bundle)
       )
     )
 
@@ -135,7 +134,7 @@ planet_order_request <-
 #' @export
 #' @examples
 
-planet_order_download <- function(order_id, order_name) {
+planet_order_download <- function(order_id, order_name, api_key) {
   #GET order for download
   #If you lose the order_id, don't redo the request, log onto planet and find it in the orders menu
   #order_id for example SMV2 order: "dab92990-ce3a-456c-8ad6-ca0c569b4a1a"
@@ -201,11 +200,9 @@ planet_order_download <- function(order_id, order_name) {
 #' @param bbox bounding box made with extent() from the raster package; must be EPSG:4326 Projection; no default.
 #' @param date_start a date object
 #' @param date_end doy start
-#' @param start_doy doy end
-#' @param end_doy a date object
 #' @param cloud_lim Cloud percentage from 0-1; defaults to 0.1, or 10%.
 #' @param item_name Defaults to "PSScene4Band".
-#' @param product Defaults to "analytic_sr"
+#' @param product_bundle Defaults to "analytic_sr"
 #' @param order_name The name you want to assign to your order
 #' @param mostrecent Integer of how many of the most recent images will be downloaded. Default is 0 (download all images).
 #' @keywords Planet
@@ -218,12 +215,11 @@ planet_order <- function(api_key,
                          bbox,
                          date_start,
                          date_end,
-                         start_doy,
-                         end_doy,
                          list_dates=NULL,
                          cloud_lim,
                          item_name,
-                         product,
+                         product_bundle,
+                         asset,
                          order_name,
                          mostrecent = 0) {
 
@@ -234,20 +230,20 @@ planet_order <- function(api_key,
                            list_dates=list_dates,
                            cloud_lim=cloud_lim,
                            item_name=item_name,
-                           product=product,
+                           product_bundle=product_bundle,
+                           asset = asset,
                            order_name=order_name,
                            api_key=api_key)
 
   }else{
 
     order_id <- planet_order_request(bbox=bbox,
-                           start_doy=start_doy,
-                           end_doy=end_doy,
                            date_end=date_end,
                            date_start=date_start,
                            cloud_lim=cloud_lim,
                            item_name=item_name,
-                           product=product,
+                           asset = asset,
+                           product_bundle=product_bundle,
                            order_name=order_name,
                            api_key=api_key,
                            mostrecent=mostrecent)
@@ -255,7 +251,7 @@ planet_order <- function(api_key,
 
   }
 
-  planet_order_download(order_id, order_name)
+  planet_order_download(order_id, order_name, api_key = api_key)
 
 }
 
