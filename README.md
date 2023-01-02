@@ -82,7 +82,7 @@ bbox         = extent(-129,-127,50,51)
 exportfolder <- paste(site, item_name, asset, lubridate::year(date_start), lubridate::year(date_end),  lubridate::yday(date_start),  lubridate::yday(date_end), sep = "_")
 
 if(!(dir.exists("exports"))){
-dir.create("exports"", showWarnings = F)
+dir.create("exports", showWarnings = F)
 }
 
 dir.create(file.path("exports", exportfolder), showWarnings = F)

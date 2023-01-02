@@ -90,30 +90,26 @@ planet_search <- function(bbox=bbox,
       lte= jsonlite::unbox(cloud_lim))
   )
 
-  # filter by ground control
-  gc_filter <- list(
-    type= jsonlite::unbox("NotFilter"),
+  # filter by ground control, quality
+  gq_filter <- list(
+    type= jsonlite::unbox("AndFilter"),
     config = list(
-      field_name= jsonlite::unbox("ground_control"),
-      type= jsonlite::unbox("StringInFilter"),
-      config = list(jsonlite::unbox(tolower(!ground_control)))
-    )
+      list(
+        field_name= jsonlite::unbox("ground_control"),
+        type= jsonlite::unbox("StringInFilter"),
+        config = list(jsonlite::unbox(tolower(ground_control)))
+      ),
+      list(
+        field_name= jsonlite::unbox("quality_category"),
+        type= jsonlite::unbox("StringInFilter"),
+        config = list(jsonlite::unbox(quality))
+      ))
   )
-
-  # filter by quality
-  quality_filter <- list(
-    type = jsonlite::unbox("NotFilter"),
-    config = list(
-      field_name= jsonlite::unbox("quality_category"),
-      type= jsonlite::unbox("StringInFilter"),
-      config = list(jsonlite::unbox(quality))
-    )
-  )
-
+  
   # combine filters
   filter_configs <- list(
     type= jsonlite::unbox("AndFilter"),
-    config = list(date_range_filter, cloud_cover_filter, gc_filter, quality_filter, geometry_filter) #, coverage_filter
+    config = list(date_range_filter, cloud_cover_filter, gq_filter, geometry_filter) #, coverage_filter
   )
 
   #build request
