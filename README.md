@@ -62,11 +62,9 @@ date_end   <- as.Date("2022-04-01")
 
 # Metadata filters
 cloud_lim <- 0.02 # percent from 0-1
-item_name <- "PSScene" 
-  # PSOrthoTile, Sentinel2L1C 
-  # (see https://developers.planet.com/docs/data/items-assets/)
-asset <- "ortho_analytic_8b_sr" 
-  # (see https://developers.planet.com/docs/data/items-assets/)
+item_name <- "PSScene" # (see https://developers.planet.com/docs/data/items-assets/)
+product_bundle <- "analytic_8b_sr_udm2" # https://developers.planet.com/docs/integrations/gee/delivery/
+asset <- ortho_udm2" # (see https://developers.planet.com/docs/data/items-assets/)
 
 # Set AOI (many ways to set this!) ultimately just need an extent()
 # OPTION 1: Import feature
@@ -94,9 +92,9 @@ planet_order(api_key = api_key,
              date_end = date_end,
              date_start = date_start,
              cloud_lim = cloud_lim, 
-             item_name = "PSScene", 
-             product_bundle = "analytic_8b_sr_udm2",
-             asset = "ortho_analytic_8b_sr",
+             item_name = item_name, 
+             product_bundle = product_bundle,
+             asset = asset,
              mostrecent = 1, # downloads the 1 most recent image
              order_name = exportfolder)
              
