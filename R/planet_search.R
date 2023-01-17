@@ -176,7 +176,7 @@ planet_search <- function(bbox=bbox,
     start_doy <- lubridate::yday(date_start)
     end_doy <- lubridate::yday(date_end)
 
-    permissions <- permissions[permissions$yday>=start_doy & permissions$yday<=end_doy,]
+    #permissions <- permissions[permissions$yday>=start_doy & permissions$yday<=end_doy,]
     print(paste("Found",nrow(permissions),"suitable",item_name, asset, "images that you have permission to download."))
     print(paste("Between yday:", start_doy, "to", end_doy))
 
